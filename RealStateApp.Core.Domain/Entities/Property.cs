@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RealStateApp.Core.Domain.Base;
 
 namespace RealStateApp.Core.Domain.Entities
 {
-    public class Property
+    public class Property : BaseEntity
     {
         public int Id { get; set; }
         public required string Code { get; set; }
@@ -29,5 +25,6 @@ namespace RealStateApp.Core.Domain.Entities
         public ICollection<PropertyImprovement>? PropertyImprovements { get; set; }
         public ICollection<PropertyImage>? Images { get; set; }
         public ICollection<Offer>? Offers { get; set; }
+        public ICollection<Chat>? Chats { get; set; }   
     }
 }
