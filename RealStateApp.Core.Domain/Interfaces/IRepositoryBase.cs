@@ -2,9 +2,9 @@
 using RealStateApp.Core.Domain.Base;
 using System.Linq.Expressions;
 
-namespace Social_Network.Core.Application.Interfaces.Repositories
+namespace RealStateApp.Core.Domain.Interfaces
 {
-    public interface IRepositoryBase<TEntity, TId>  where TEntity : class
+    public interface IRepositoryBase<TEntity, TId> where TEntity : class
     {
         Task<Result<TEntity>> AddAsync(TEntity entity);
         Task<IEnumerable<TEntity>> GetAllAsync();
@@ -18,6 +18,9 @@ namespace Social_Network.Core.Application.Interfaces.Repositories
         Task<TEntity> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
         IQueryable<TEntity> AsQuery();
         Task<PaginatedResponse<TEntity>> GetPaginated(Pagination pagination);
+
+        Task DeleteAsync(int id);
+        Task<List<TEntity>> GetAllListWithInclude(List<string> properties);
 
     }
 }

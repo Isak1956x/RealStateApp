@@ -2,7 +2,7 @@
 using RealState.Infraestructure.Persistence.Context;
 using RealStateApp.Core.Application.Wrappers;
 using RealStateApp.Core.Domain.Base;
-using Social_Network.Core.Application.Interfaces.Repositories;
+using RealStateApp.Core.Domain.Interfaces;
 using System.Linq.Expressions;
 
 namespace RealState.Infraestructure.Persistence.Repositories
@@ -102,5 +102,27 @@ namespace RealState.Infraestructure.Persistence.Repositories
 
         public async Task<IEnumerable<TEntity>> WhereAsync(Expression<Func<TEntity, bool>> predicate)
             => await _entitySet.Where(predicate).ToListAsync();
+
+        public virtual async Task<List<TEntity>> GetAllListWithInclude(List<string> properties)
+        {
+            var query = _context.Set<TEntity>().AsQueryable();
+
+            foreach (var property in properties)
+            {
+                query = query.Include(property);
+            }
+
+            return await query.ToListAsync(); //EF - immediate execution
+        }
+
+        public virtual async Task DeleteAsync(int id)
+        {
+            var entity = await _context.Set<TEntity>().FindAsync(id);
+            if (entity != null)
+            {
+                _context.Set<TEntity>().Remove(entity);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }
