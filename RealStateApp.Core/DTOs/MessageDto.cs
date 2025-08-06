@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RealStateApp.Core.Domain.Entities
+namespace RealStateApp.Core.Application.DTOs
 {
-    public class Message
+    public class MessageDto
     {
         public int Id { get; set; }
         public int ChatID { get; set; }
-        public Chat? Chat { get; set; }
+        public ChatDto? Chat { get; set; }
         public required string Content { get; set; }
         public int SenderID { get; set; }
         public DateTime Date { get; set; }

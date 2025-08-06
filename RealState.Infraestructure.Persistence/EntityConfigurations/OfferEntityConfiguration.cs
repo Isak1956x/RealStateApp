@@ -34,7 +34,7 @@ namespace RealState.Infraestructure.Persistence.EntityConfigurations
                 .IsRequired();
 
             builder.Property(o => o.Status)
-                .IsRequired().HasDefaultValue(Status.Pending.ToString());
+                .IsRequired().HasDefaultValue(Status.Pending);
 
             #endregion
 
