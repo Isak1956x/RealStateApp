@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RealStateApp.Core.Domain.Base;
 using RealStateApp.Core.Domain.Enums;
 
 namespace RealStateApp.Core.Domain.Entities
 {
-    public class Offer
+    public class Offer : BaseEntity
     {
       
             public int Id { get; set; }
