@@ -9,9 +9,7 @@
   <ItemGroup>
     <Folder Include="Features\" />
     <Folder Include="Behaviors\" />
-    <Folder Include="Interfaces\Infraestructure\Identity\" />
     <Folder Include="Interfaces\Infraestructure\Persistence\" />
-    <Folder Include="Interfaces\Infraestructure\Shared\" />
     <Folder Include="Interfaces\Services\" />
   </ItemGroup>
 
