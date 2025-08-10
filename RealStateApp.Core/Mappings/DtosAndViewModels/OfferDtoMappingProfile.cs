@@ -9,11 +9,11 @@ using RealStateApp.Core.Application.ViewModels;
 
 namespace RealStateApp.Core.Application.Mappings.DtosAndViewModels
 {
-    public class SaleTypeDtoMappingProfile : Profile
+    public class OfferDtoMappingProfile : Profile
     {
-          public SaleTypeDtoMappingProfile()
+          public OfferDtoMappingProfile()
         {
-            CreateMap<SaleTypeDto, SaleTypeViewModel>().ReverseMap();
+            CreateMap<OfferDto, OfferViewModel>().ReverseMap();
         }
     }
 }

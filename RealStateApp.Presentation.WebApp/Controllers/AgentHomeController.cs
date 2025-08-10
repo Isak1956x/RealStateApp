@@ -4,16 +4,16 @@ using Microsoft.AspNetCore.Mvc;
 using RealStateApp.Core.Application.Services;
 using RealStateApp.Core.Application.ViewModels;
 using RealStateApp.Presentation.WebApp.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace RealStateApp.Presentation.WebApp.Controllers
 {
-    public class HomeController : Controller
+    public class AgentHomeController : Controller
     {
+        private readonly IPropertyService _propertyService;
+        private readonly IMapper _mapper;
 
- private readonly IPropertyService _propertyService;
- private readonly IMapper _mapper;
-
-        public HomeController(IPropertyService propertyService, IMapper mapper)
+        public AgentHomeController(IPropertyService propertyService, IMapper mapper)
         {
             _propertyService = propertyService;
             _mapper = mapper;
@@ -22,9 +22,8 @@ namespace RealStateApp.Presentation.WebApp.Controllers
         public async Task<IActionResult> Index()
         {
             var properties = await _propertyService.GetAllListWithInclude(["PropertyType", "SaleType", "PropertyImprovements", "Images"]);
-            var propertiesVm = _mapper.Map<List<PropertyViewModel>>(properties)
-                .Where(p => p.IsAvailable)
-                .OrderByDescending(p => p.CreateAt).ToList();
+            var propertiesVm = _mapper.Map<List<PropertyViewModel>>(properties).ToList();
+
             return View(propertiesVm);
         }
 

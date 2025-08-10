@@ -13,7 +13,7 @@ namespace RealStateApp.Core.Application.Mappings.EntitiesAndDtos
     {
         public PropertyImageMappingProfile()
         {
-            CreateMap<PropertyImage, PropertyDto>().ReverseMap();
+            CreateMap<PropertyImage, PropertyImageDto>().ReverseMap();
         }
     }
 }

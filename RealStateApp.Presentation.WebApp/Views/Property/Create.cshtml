@@ -1,17 +1,19 @@
 ﻿@using RealStateApp.Core.Application.ViewModels
 @model SavePropertyViewModel
 @{
-    ViewData["Title"] = "Crear Nueva Propiedad";
+  
     Layout = "_AgentLayout";
+	bool EditMode = ViewBag.EditMode ?? false;
+	ViewData["Title"] = EditMode ? "Editar Propiedad" : "Crear Propiedad";
 }
 
 <div class="col-12 col-md-8 offset-md-2">
     <div class="card shadow-lg">
         <div class="card-header bg-success text-light text-center">
-            <h5 class="mb-0">Crear Nueva Propiedad</h5>
+            <h5 class="mb-0">@(EditMode ? "Editar Propiedad" : "Crear Nueva Propiedad")</h5>
         </div>
         <div class="card-body">
-            <form asp-action="Create" method="post" enctype="multipart/form-data" class="mt-3">
+            <form asp-action="@(EditMode  ? "Edit" : "Create")" method="post" enctype="multipart/form-data" class="mt-3">
 
                 <!-- Tipo de propiedad -->
                 <div class="mb-3">
@@ -117,10 +119,16 @@
                     <input asp-for="Images" type="file" class="form-control" accept="image/*" multiple>
                     <span asp-validation-for="Images" class="text-danger"></span>
                 </div>
-
+                <input asp-for="Id" hidden>
+                <input asp-for="IsAvailable" hidden>
+                <input asp-for="Code" hidden>
+                <input asp-for="AgentId" hidden>
+                <input asp-for="PropertyTypes" hidden>
+                <input asp-for="Improvements" hidden>
+                <input asp-for="SaleTypes" hidden>
                 <!-- Botón -->
                 <div class="d-grid">
-                    <button type="submit" class="btn btn-success">Guardar Propiedad</button>
+                    <button type="submit" class="btn btn-success">@(EditMode ? "Editar Propiedad" : "Guardar Propiedaf")</button>
                 </div>
             </form>
         </div>

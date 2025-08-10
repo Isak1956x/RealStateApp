@@ -6,6 +6,9 @@ namespace RealStateApp.Core.Application.ViewModels
 {
     public class SavePropertyViewModel : BaseEntity
     {
+       
+        public string? Code { get; set; }
+        public required  int Id { get; set; }
         [Required(ErrorMessage = "Property Type is required.")]
         public required int PropertyTypeId { get; set; }
         public List<PropertyTypeViewModel>? PropertyTypes { get; set; }

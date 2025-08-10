@@ -133,9 +133,23 @@ namespace RealStateApp.Core.Application.Services
 
         }
 
-        public Task<DtoModel?> UpdateAsync(DtoModel dto, int id)
+        public async Task<DtoModel?> UpdateAsync( int id, DtoModel dto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Entity entity = _mapper.Map<Entity>(dto);
+                var returnEntity = await _repository.UpdateAsync(id, entity);
+                if (returnEntity == null)
+                {
+                    return null;
+                }
+
+                return _mapper.Map<DtoModel>(returnEntity);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
   
     }

@@ -10,6 +10,7 @@ namespace RealStateApp.Core.Domain.Interfaces
         Task<IEnumerable<TEntity>> GetAllAsync();
         //Task<IEnumerable<TEntity>> GetActivesAsync();
         Task<Result<TEntity>> GetById(TId id);
+        Task<Result<TEntity>> UpdateAsync(int id, TEntity entity);
         Task<Result<TEntity>> UpdateAsync(TEntity entity);
         Task<Result<Unit>> DeleteAsync(TEntity entity);
         Task<bool> Any(Expression<Func<TEntity, bool>> predicate);

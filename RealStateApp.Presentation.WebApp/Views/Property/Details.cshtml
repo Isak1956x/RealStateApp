@@ -1,0 +1,98 @@
+﻿@using RealStateApp.Core.Application.ViewModels
+@model PropertyViewModel
+@{
+
+    Layout = "_AgentLayout";
+    ViewData["Title"] = "Eliminar Propiedad";
+}
+
+
+<div class="container my-4">
+    <div class="row">
+        <!-- Slider de imágenes -->
+        <div class="col-lg-8">
+            <div id="propertyCarousel" class="carousel slide mb-3" data-bs-ride="carousel" style="height: 400px; max-width: 700px;">
+                <div class="carousel-inner h-100">
+                    @if (Model.Images != null && Model.Images.Any())
+                    {
+                        int i = 0;
+                        foreach (var img in Model.Images)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "") h-100">
+                                <img src="@img.Url" class="d-block w-100 h-100 object-fit-cover" alt="Imagen propiedad" />
+                            </div>
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        <div class="carousel-item active bg-secondary d-flex align-items-center justify-content-center" style="height:400px;">
+                            <span class="text-white">No images available</span>
+                        </div>
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+
+            <!-- Código propiedad -->
+            <p><i class="bi bi-key"></i> <strong> Código: </strong> @Model.Code</p>
+
+            <!-- Tipo de propiedad y tipo de venta -->
+            <p><strong>Tipo: </strong> @Model.PropertyType.Name</p>
+            <p><i class="bi bi-house-gear-fill"></i> <strong> Venta: </strong> @Model.SaleType.Name</p>
+
+            <!-- Precio -->
+            <h3 class="text-danger">US$ @Model.Price.ToString("N0")</h3>
+
+            <!-- Habitaciones, baños, tamaño -->
+            <div class="d-flex gap-3 mb-3">
+                <span><i class="bi bi-door-closed"></i> @Model.Bedrooms Habitación(es)</span>
+                <span><i class="bi bi-bucket"></i> @Model.Bathrooms Baño(s)</span>
+                <span><i class="bi bi-arrows-angle-expand"></i> @Model.SizeInMeters m²</span>
+            </div>
+
+            <!-- Descripción -->
+            <h5>Descripción</h5>
+            <p>@Model.Description</p>
+
+            <!-- Mejoras -->
+            @if(Model.PropertyImprovements != null && Model.PropertyImprovements.Any())
+            {
+                <h5>Mejoras</h5>
+                <ul>
+                    @foreach (var improvement in Model.PropertyImprovements)
+                    {
+                        <li>@improvement.Improvement.Name</li>
+                    }
+                </ul>
+            }
+        </div>
+
+        <!-- Datos del agente -->
+        <div class="col-lg-4">
+            <div class="card p-3 shadow-sm">
+                <h6>Asesor inmobiliario</h6>
+                <div class="d-flex align-items-center mb-3">
+                    <img src="https://d1rvv10iovlkkr.cloudfront.net/wp-content/uploads/2024/07/a-male-real-estate-agent-headshot-generated-by-ai-ease-ai-headshot-creator.webp" alt="Foto agente" class="rounded-circle me-3" style="width: 70px; height: 70px; object-fit: cover;">
+                    <div>
+                        <p class="mb-1">Ricardo</p>
+                        <p class="mb-0"><i class="bi bi-telephone"></i>809</p>
+                        <p class="mb-0"><i class="bi bi-whatsapp"></i> 809</p>
+                        <p class="mb-0"><i class="bi bi-envelope"></i> tunene</p>
+                    </div>
+                </div>
+                <button class="btn btn-primary w-100">Solicitar Asesoría</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
