@@ -1,10 +1,10 @@
 ﻿@using RealStateApp.Core.Application.ViewModels
 @model SavePropertyViewModel
 @{
-  
+
     Layout = "_AgentLayout";
-	bool EditMode = ViewBag.EditMode ?? false;
-	ViewData["Title"] = EditMode ? "Editar Propiedad" : "Crear Propiedad";
+    bool EditMode = ViewBag.EditMode ?? false;
+    ViewData["Title"] = EditMode ? "Editar Propiedad" : "Crear Propiedad";
 }
 
 <div class="col-12 col-md-8 offset-md-2">
@@ -112,7 +112,38 @@
                     </select>
                     <span asp-validation-for="ImprovementId" class="text-danger"></span>
                 </div>
-
+                @if (EditMode)
+                {
+                    <div id="propertyCarousel" class="carousel slide mb-3" data-bs-ride="carousel" style="height: 400px; max-width: 700px;">
+                        <div class="carousel-inner h-100">
+                            @if (Model.Property!.Images != null && Model.Property.Images.Any())
+                            {
+                                int i = 0;
+                                foreach (var img in Model.Property!.Images!)
+                                {
+                                    <div class="carousel-item @(i == 0 ? "active" : "") h-100">
+                                        <img src="@img.Url" class="d-block w-100 h-100 object-fit-cover" alt="Imagen propiedad" />
+                                    </div>
+                                    i++;
+                                }
+                            }
+                            else
+                            {
+                                <div class="carousel-item active bg-secondary d-flex align-items-center justify-content-center" style="height:400px;">
+                                    <span class="text-white">No images available</span>
+                                </div>
+                            }
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Anterior</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Siguiente</span>
+                        </button>
+                    </div>
+                }
                 <!-- Imágenes -->
                 <div class="mb-3">
                     <label asp-for="Images" class="form-label">Seleccione de 1 a 4 imágenes</label>

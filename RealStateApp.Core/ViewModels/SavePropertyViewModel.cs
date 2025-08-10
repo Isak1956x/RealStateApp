@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using RealStateApp.Core.Domain.Base;
+using RealStateApp.Core.Domain.Entities;
 
 namespace RealStateApp.Core.Application.ViewModels
 {
@@ -18,7 +19,9 @@ namespace RealStateApp.Core.Application.ViewModels
         [Required(ErrorMessage = "Improvement is required.")]
         public int ImprovementId { get; set; }
         public List<ImprovementViewModel>? Improvements { get; set; }
+        [Required(ErrorMessage = "A image  is required")]
         public List<IFormFile> Images { get; set; } = new();
+        public PropertyViewModel? Property { get; set; }
 
         [Required(ErrorMessage = "Price is required.")]
         [DataType(DataType.Currency)]

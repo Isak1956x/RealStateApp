@@ -53,7 +53,7 @@
 
             <!-- Habitaciones, baños, tamaño -->
             <div class="d-flex gap-3 mb-3">
-                <span><i class="bi bi-door-closed"></i> @Model.Bedrooms Habitación(es)</span>
+                <span><i class="bi bi-door-closed"></i> @Model.Bedrooms @(Model.Bedrooms > 1 ? "Habitaciones" : "Habitacion")</span>
                 <span><i class="bi bi-bucket"></i> @Model.Bathrooms Baño(s)</span>
                 <span><i class="bi bi-arrows-angle-expand"></i> @Model.SizeInMeters m²</span>
             </div>
@@ -63,16 +63,7 @@
             <p>@Model.Description</p>
 
             <!-- Mejoras -->
-            @if(Model.PropertyImprovements != null && Model.PropertyImprovements.Any())
-            {
-                <h5>Mejoras</h5>
-                <ul>
-                    @foreach (var improvement in Model.PropertyImprovements)
-                    {
-                        <li>@improvement.Improvement.Name</li>
-                    }
-                </ul>
-            }
+         
         </div>
 
         <!-- Datos del agente -->

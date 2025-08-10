@@ -1,22 +1,66 @@
 ﻿@using RealStateApp.Core.Application.ViewModels
-@model List<PropertyViewModel>
+@model HomeViewModel
 @{
     ViewData["Title"] = "Home Page";
     Layout = "_GeneralLayout";
 }
+<form method="get" asp-action="Index" class="mb-4" style="max-width: 350px;">
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
+        <input type="text" asp-for="Code" class="form-control" placeholder="Buscar propiedad por código"  />
+        <button class="btn btn-primary" type="submit">Buscar</button>
+    </div>
+</form>
 
 
+<!-- Filtros -->
+<form method="get" asp-action="Index" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <label class="form-label">Tipo de propiedad</label>
+        <select asp-for="PropertyTypeId" class="form-select">
+            <option value="">Todas</option>
+            @foreach (var propertyType in Model.PropertyTypes!)
+            {
+                <option value="@propertyType.Id">@propertyType.Name</option>
+            }
+        </select>
+    </div>
 
+    <div class="col-md-2">
+        <label class="form-label">Precio mínimo</label>
+        <input type="number" asp-for="MinPrice" class="form-control" placeholder="RD$">
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Precio máximo</label>
+        <input type="number" asp-for="MaxPrice" class="form-control" placeholder="RD$">
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Habitaciones</label>
+        <input type="number" asp-for="Bedrooms" class="form-control" min="0">
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label">Baños</label>
+        <input type="number" asp-for="Bathrooms" class="form-control" min="0">
+    </div>
+
+    <div class="col-md-1 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+    </div>
+</form>
 
 <div class="row g-4">
-    @if (Model != null && Model.Any())
+    @if (Model != null && Model.Properties!.Any())
     {
-        foreach (var propiedad in Model)
+        foreach (var propiedad in Model.Properties!)
         {
-            <a asp-controller="Property" asp-action="Details" asp-route-Id="@(propiedad.Id)" style="text-decoration: none; color: inherit;">
+          
             <div class="col-md-4">
+                  <a asp-controller="Property" asp-action="Details" asp-route-Id="@(propiedad.Id)" style="text-decoration: none; color: inherit;">
                 <div class="card shadow-sm h-100 position-relative ">
-                    <img src="@propiedad.Images.FirstOrDefault().Url"
+                        <img src="@(propiedad.Images != null ? propiedad.Images!.FirstOrDefault()!.Url : "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg")"
                          class="card-img-top img-fluid"
                          style="height: 200px; object-fit: cover;"
                          alt="Imagen Propiedad" />
@@ -51,8 +95,8 @@
 
                     </div>
                 </div>
-            </div>
             </a>
+            </div>
         }
     }
     else

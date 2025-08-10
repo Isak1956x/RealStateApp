@@ -4,6 +4,7 @@ using RealStateApp.Core.Application.DTOs;
 using RealStateApp.Core.Application.Services;
 using RealStateApp.Core.Application.ViewModels;
 using RealStateApp.Core.Domain.Entities;
+using RealStateApp.Presentation.WebApp.Helpers;
 
 namespace RealStateApp.Presentation.WebApp.Controllers
 {
@@ -14,20 +15,22 @@ namespace RealStateApp.Presentation.WebApp.Controllers
         private readonly IImprovementService _improvementService;
         private readonly ISaleTypeService _saleTypeService;
         private readonly IPropertyTypeService _propertyTypeService;
+        private readonly IPropertyImageService _propertyImageService;
         private readonly IMapper _mapper;
 
-        public PropertyController(IPropertyService propertyService, IImprovementService improvementService, ISaleTypeService saleTypeService, IPropertyTypeService propertyTypeService, IMapper mapper)
+        public PropertyController(IPropertyService propertyService, IImprovementService improvementService, ISaleTypeService saleTypeService, IPropertyTypeService propertyTypeService, IPropertyImageService propertyImageService, IMapper mapper)
         {
             _propertyService = propertyService;
             _improvementService = improvementService;
             _saleTypeService = saleTypeService;
             _propertyTypeService = propertyTypeService;
+            _propertyImageService = propertyImageService;
             _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
         {
-            var properties = await _propertyService.GetAllListWithInclude(["PropertyType", "SaleType", "PropertyImprovements"]);
+            var properties = await _propertyService.GetAllListWithInclude(["PropertyType", "SaleType", "PropertyImprovements", "Images"]);
             var vm = _mapper.Map<List<PropertyViewModel>>(properties)
                 .Where(p => p.IsAvailable).ToList();
             return View(vm);
@@ -83,6 +86,18 @@ namespace RealStateApp.Presentation.WebApp.Controllers
 
                 return View(vm);
             }
+            if(!vm.Images.Any())
+            {
+                ModelState.AddModelError("Images", "A Image is required");
+                var saleTypes = await _saleTypeService.GetAll();
+                var improvements = await _improvementService.GetAll();
+                var propertTypes = await _propertyTypeService.GetAll();
+                vm.PropertyTypes = _mapper.Map<List<PropertyTypeViewModel>>(propertTypes);
+                vm.Improvements = _mapper.Map<List<ImprovementViewModel>>(improvements);
+                vm.SaleTypes = _mapper.Map<List<SaleTypeViewModel>>(saleTypes);
+                return View(vm);
+            }
+
             var propertyDto = new PropertyDto
             {
                 Price = vm.Price,
@@ -98,11 +113,26 @@ namespace RealStateApp.Presentation.WebApp.Controllers
                 Id = 0
             };
             var result = await _propertyService.AddAsync(propertyDto);
-            return RedirectToAction("Index");
+            if (result != null)
+            {
+                if (vm.Images.Any())
+                {
+                    foreach (var image in vm.Images)
+                    {
+                        var imageDto = new PropertyImageDto
+                        {
+                            PropertyId = result.Id,
+                            Url = FileManager.Upload(image, result.Id!, "Images")!
+                        };
+                        await _propertyImageService.AddAsync(imageDto);
+                    }
+                }
+            }
+                return RedirectToAction("Index");
         }
         public async Task<IActionResult> Edit(int Id)
         {
-            var properties = await _propertyService.GetAllListWithInclude(["PropertyType", "SaleType", "PropertyImprovements"]);
+            var properties = await _propertyService.GetAllListWithInclude(["PropertyType", "SaleType", "PropertyImprovements", "Images"]);
             var property = properties.FirstOrDefault(p => p.Id == Id);
             var saleTypes = await _saleTypeService.GetAll();
             var improvements = await _improvementService.GetAll();
@@ -134,7 +164,8 @@ namespace RealStateApp.Presentation.WebApp.Controllers
                 }).ToList(),
                 SaleTypeId = property.SaleTypeId,
                 AgentId = property.AgentId,
-                Description = property.Description!
+                Description = property.Description!,
+                Property = _mapper.Map<PropertyViewModel>(property)
             };
             ViewBag.EditMode = true;
             return View("Create", propertyViewModel);
@@ -162,7 +193,22 @@ namespace RealStateApp.Presentation.WebApp.Controllers
                 SizeInMeters = vm.SizeInMeters
 
             };
-            await _propertyService.UpdateAsync(property.Id, property);
+            var result = await _propertyService.UpdateAsync(property.Id, property);
+            if (result != null)
+            {
+                if (vm.Images.Any())
+                {
+                    foreach (var image in vm.Images)
+                    {
+                        var imageDto = new PropertyImageDto
+                        {
+                            PropertyId = result.Id,
+                            Url = FileManager.Upload(image, result.Id!, "Images")!
+                        };
+                        await _propertyImageService.AddAsync(imageDto);
+                    }
+                }
+            }
             return RedirectToAction("Index");
         }
 

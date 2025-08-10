@@ -30,7 +30,7 @@ namespace RealStateApp.Core.Application.Services
                     return null;
                 }
 
-                return _mapper.Map<DtoModel>(returnEntity);
+                return _mapper.Map<DtoModel>(returnEntity.Value);
             }
             catch (Exception)
             {
@@ -144,7 +144,7 @@ namespace RealStateApp.Core.Application.Services
                     return null;
                 }
 
-                return _mapper.Map<DtoModel>(returnEntity);
+                return _mapper.Map<DtoModel>(returnEntity.Value);
             }
             catch (Exception)
             {
