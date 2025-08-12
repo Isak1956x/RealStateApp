@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using RealStateApp.Core.Application.DTOs;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Domain.Entities;
@@ -21,6 +22,5 @@ namespace RealStateApp.Core.Application.Services
             _mapper = mapper;
         }
     }
-   
   
 }

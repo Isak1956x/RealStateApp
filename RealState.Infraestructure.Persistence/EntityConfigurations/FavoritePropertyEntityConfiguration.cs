@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using RealStateApp.Core.Domain.Entities;
 
+
 namespace RealState.Infraestructure.Persistence.EntityConfigurations
 {
     public class FavoritePropertyEntityConfiguration : IEntityTypeConfiguration<FavoriteProperty>
