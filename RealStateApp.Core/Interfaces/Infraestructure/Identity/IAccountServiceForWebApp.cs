@@ -3,7 +3,7 @@ using RealStateApp.Core.Domain.Base;
 
 namespace RealStateApp.Core.Application.Interfaces
 {
-    public interface IAccountServiceForWebApp
+    public interface IAccountServiceForWebApp : IBaseAccountService
     {
         Task<Result<LoginResponseDTO>> Login(LoginRequestDTO loginRequest);
         Task<Result<Unit>> SendResetPassword(string email, string origin, bool isApi = false);

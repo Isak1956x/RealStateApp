@@ -16,5 +16,6 @@ namespace RealStateApp.Core.Application.Interfaces
         Task<Result<Unit>> ResetPasswordAsync(string userId, string token, string newPassword);
         Task<Result<Unit>> SendResetPassword(string email, string origin, bool isApi = false);
         Task<Result<Unit>> SendResetPasswordEmail(string email, string origin);
+        Task<Result<Unit>> UpdateProfilePhoto(string userId, string photoPath);
     }
 }

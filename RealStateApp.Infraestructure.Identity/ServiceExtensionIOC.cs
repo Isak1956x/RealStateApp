@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using RealStateApp.Core.Domain.Settings;
 using RealStateApp.Infraestructure.Identity.Context;
 using RealStateApp.Infraestructure.Identity.Entities;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
-using Microsoft.IdentityModel.Tokens;
+using RealStateApp.Infraestructure.Identity.Seeds;
 using System.Text;
-using RealStateApp.Core.Domain.Settings;
 
 namespace RealStateApp.Infraestructure.Identity
 {
@@ -156,6 +157,18 @@ namespace RealStateApp.Infraestructure.Identity
             }, contextLifetime: ServiceLifetime.Scoped,
                    optionsLifetime: ServiceLifetime.Scoped
             );
+        }
+
+        public static async Task RunIdentitySeedAsyn(this IServiceProvider serviceProvider)
+        {
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var provider = scope.ServiceProvider;
+                var userManager = provider.GetRequiredService<UserManager<AppUser>>();
+                var roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
+                await DefaultRoles.SeedAsync(roleManager);
+                //await DefaultIdentUser.SeedAsync(userManager);
+            }
         }
     }
 }

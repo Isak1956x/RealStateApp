@@ -219,6 +219,21 @@ namespace RealStateApp.Infraestructure.Identity.Services
                          LastName = U.LastName,
                      }).FirstOrDefaultAsync();
 
+        public async Task<Result<Unit>> UpdateProfilePhoto(string userId, string photoPath)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return Result<Unit>.Fail("User not found.");
+            }
+            user.PhotoPath = photoPath;
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return Result<Unit>.Fail("Profile photo update failed.");
+            }
+            return Unit.Value;
+        }
         protected abstract Task<Result<Unit>> SendEmailVerifaction(AppUser user, string origin);
         public abstract Task<Result<Unit>> SendResetPassword(string email, string origin, bool isApi = false);
 
