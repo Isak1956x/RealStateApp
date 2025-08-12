@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using RealStateApp.Core.Application.DTOs;
 using RealStateApp.Core.Application.Interfaces;
+using RealStateApp.Core.Application.ViewModels;
 using RealStateApp.Core.Domain.Entities;
 using RealStateApp.Core.Domain.Interfaces;
 

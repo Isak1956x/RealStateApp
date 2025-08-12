@@ -1,0 +1,62 @@
+﻿@using RealStateApp.Core.Application.ViewModels
+@model List<PropertyViewModel>
+@{
+    ViewData["Title"] = "Home Page";
+	Layout = "_AgentLayout";
+}
+
+
+
+
+<div class="row g-4">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var propiedad in Model)
+        {
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100 position-relative ">
+                    <img src="@propiedad.Images.FirstOrDefault().Url"
+                         class="card-img-top img-fluid"
+                         style="height: 200px; object-fit: cover;"
+                         alt="Imagen Propiedad" />
+
+                    @if (!propiedad.IsAvailable)
+                    {
+                        <span class="badge bg-danger position-absolute top-0 end-0 m-2 fs-6">
+                            VENDIDA
+                        </span>
+
+                    }
+
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@propiedad.PropertyType!.Name</h5>
+                        <p class ="card-text mb-1"><i class="bi bi-key"></i> @propiedad.Code</p>
+                        <p class="card-text mb-1"><i class="bi bi-house-gear-fill"></i> @propiedad.SaleType!.Name</p>
+                        <p class="card-text mb-1">
+                            <i class="bi bi-currency-dollar me-2"></i> RD @propiedad.Price
+                        </p>
+
+                        <p class="card-text mb-1">
+                            <i class="bi bi-aspect-ratio me-2"></i> @propiedad.SizeInMeters m²
+                        </p>
+
+                        <p class="card-text mb-1">
+                            <i class="bi bi-door-open me-2"></i> @propiedad.Bedrooms Hab.
+                        </p>
+
+                        <p class="card-text mb-1">
+                            <i class="bi bi-bucket me-2"></i> @propiedad.Bathrooms Baños
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-info">No hay propiedades disponibles.</div>
+        </div>
+    }
+</div>

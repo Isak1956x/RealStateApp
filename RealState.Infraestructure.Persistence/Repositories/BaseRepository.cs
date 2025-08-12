@@ -99,7 +99,24 @@ namespace RealState.Infraestructure.Persistence.Repositories
                 return Result<TEntity>.Fail(ex.Message);
             }
         }
-
+        public async Task<Result<TEntity>> UpdateAsync(int id, TEntity entity)
+        {
+            try
+            {
+                var entry = await _context.Set<TEntity>().FindAsync(id);
+                if (entry != null)
+                {
+                    _context.Entry(entry).CurrentValues.SetValues(entity);
+                    await _context.SaveChangesAsync();
+                    return Result<TEntity>.Ok(entry);
+                }
+                return Result<TEntity>.Fail($"Entity with id {id} not found.");
+            }
+            catch (Exception ex)
+            {
+                return Result<TEntity>.Fail(ex.Message);
+            }
+        }
         public async Task<IEnumerable<TEntity>> WhereAsync(Expression<Func<TEntity, bool>> predicate)
             => await _entitySet.Where(predicate).ToListAsync();
 
