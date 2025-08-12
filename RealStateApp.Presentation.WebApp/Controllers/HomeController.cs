@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using RealStateApp.Core.Application.Services;
 using RealStateApp.Presentation.WebApp.Models;
 
 namespace RealStateApp.Presentation.WebApp.Controllers
@@ -7,14 +8,17 @@ namespace RealStateApp.Presentation.WebApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ISaleTypeService _saleTypeService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ISaleTypeService saleTypeService)
         {
             _logger = logger;
+            _saleTypeService = saleTypeService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var saleTypes = await _saleTypeService.GetAll();
             return View();
         }
 

@@ -20,7 +20,19 @@ namespace RealState.Infraestructure.Persistence
                 ServiceLifetime.Scoped);
             #endregion
 
-       
+            #region Repositories IOC
+            services.AddScoped<IChatRepository, ChatRepository>();
+            services.AddScoped<IFavoritePropertyRepository, FavoritePropertyRepository>();
+            services.AddScoped<IImprovementRepository, ImprovementRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IOfferRepository, OfferRepository>();
+            services.AddScoped<IPropertyImageRepository, PropertyImageRepository>();
+            services.AddScoped<IPropertyImprovementRepository, PropertyImprovementRepository>();
+            services.AddScoped<IPropertyRepository, PropertyRepository>();
+            services.AddScoped<IPropertyTypeRepository, PropertyTypeRepository>();
+            services.AddScoped<ISaleTypeRepository, SaleTypeRepository>();
+            #endregion
+
         }
     }
 }
