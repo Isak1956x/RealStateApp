@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using RealStateApp.Core.Application.DTOs.Email;
 using RealStateApp.Core.Application.DTOs.Users;
+using RealStateApp.Core.Application.Helpers.Enums;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Application.Interfaces.Infraestructure.Shared;
 using RealStateApp.Core.Domain.Base;
+using RealStateApp.Core.Domain.Enums;
 using RealStateApp.Infraestructure.Identity.Entities;
 using System.Text;
 
@@ -14,18 +17,31 @@ namespace RealStateApp.Infraestructure.Identity.Services
     public abstract class BaseAccountService : IBaseAccountService
     {
         protected readonly UserManager<AppUser> _userManager;
+        protected readonly IMapper _mapper;
         protected readonly SignInManager<AppUser> _signInManager;
         protected readonly IEmailService _emailService;
 
 
-        protected BaseAccountService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService)
+        protected BaseAccountService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService, IMapper mapper)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             _emailService = emailService;
+            _mapper = mapper;
         }
 
-
+        public async Task<Result<UserDto>> GetUserByIdAsync(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return Result<UserDto>.Fail("User not found.");
+            }
+            var roles = await _userManager.GetRolesAsync(user);
+            var userDto = _mapper.Map<UserDto>(user);
+            userDto.Role = roles.FirstOrDefault();
+            return userDto;
+        }
 
 
         public async Task<Result<string>> RegisterAsync(RegisterRequestDTO registerRequest, string origin)
@@ -40,6 +56,11 @@ namespace RealStateApp.Infraestructure.Identity.Services
             {
                 return Result<string>.Fail("Username already exists.");
             }
+            if (!EnumHelper.TryParseEnum<UserRoles>(registerRequest.RoleId, out var role))
+            {
+                return Result<string>.Fail("Invalid role ID.");
+            }
+
             var user = new AppUser
             {
                 UserName = registerRequest.UserName,
@@ -47,7 +68,6 @@ namespace RealStateApp.Infraestructure.Identity.Services
                 FirstName = registerRequest.FirstName,
                 LastName = registerRequest.LastName,
                 PhotoPath = registerRequest.PhotoPath,
-                //Role = (UserRole)registerRequest.RoleId,
                 IdNumber = registerRequest.IdNumber,
                 PhoneNumberConfirmed = true,
                 EmailConfirmed = false
@@ -57,7 +77,7 @@ namespace RealStateApp.Infraestructure.Identity.Services
             {
                 return Result<string>.Fail("Registration failed. Please try again.");
             }
-            await _userManager.AddToRoleAsync(user, "BasicUser");
+            await _userManager.AddToRoleAsync(user, role.ToString());
 
             var res = await SendEmailVerifaction(user, origin);
             if (!res.IsSuccess)
@@ -74,6 +94,45 @@ namespace RealStateApp.Infraestructure.Identity.Services
             });
             */
             return user.Id;
+
+        }
+
+        public virtual async Task<Result<UserDto>> RegisterByAdmin(RegisterRequestDTO registerRequest)
+        {
+            var userWithEmail = await _userManager.FindByEmailAsync(registerRequest.Email);
+            if (userWithEmail != null)
+            {
+                return Result<UserDto>.Fail("Email already exists.");
+            }
+            var userWithUserName = await _userManager.FindByNameAsync(registerRequest.UserName);
+            if (userWithUserName != null)
+            {
+                return Result<UserDto>.Fail("Username already exists.");
+            }
+            if(!EnumHelper.TryParseEnum<UserRoles>(registerRequest.RoleId, out var role))
+            {
+                return Result<UserDto>.Fail("Invalid role ID.");
+            }
+
+            var user = new AppUser
+            {
+                UserName = registerRequest.UserName,
+                Email = registerRequest.Email,
+                FirstName = registerRequest.FirstName,
+                LastName = registerRequest.LastName,
+                PhotoPath = registerRequest.PhotoPath,
+                //Role = (UserRole)registerRequest.RoleId,
+                IdNumber = registerRequest.IdNumber,
+                PhoneNumberConfirmed = true,
+                EmailConfirmed = true
+            };
+            var result = await _userManager.CreateAsync(user, registerRequest.Password);
+            if (!result.Succeeded)
+            {
+                return Result<UserDto>.Fail("Registration failed. Please try again.");
+            }
+            await _userManager.AddToRoleAsync(user, role.ToString());
+            return _mapper.Map<UserDto>(user);
 
         }
 
@@ -157,7 +216,28 @@ namespace RealStateApp.Infraestructure.Identity.Services
             }
             return Unit.Value;
         }
+        public async Task<IEnumerable<UserDto>> GetByRole(UserRoles role)
+        {
+            var users = await _userManager.GetUsersInRoleAsync(role.ToString());
+            return users.Select(user => new UserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                IdCardNumber = user.IdNumber,
+                IsActive = user.IsActive,
+                Role = role.ToString()
+            });
 
+        }
+
+        public async Task<IEnumerable<UserDto>> GetAdmins()
+            => await GetByRole(UserRoles.Admin);
+
+        public async Task<IEnumerable<UserDto>> GetDevs()
+            => await GetByRole(UserRoles.Developer);
         public async Task<Result<Unit>> SendResetPasswordEmail(string email, string origin)
         {
             var user = await _userManager.FindByEmailAsync(email);

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RealStateApp.Core.Application.DTOs.Users;
@@ -18,7 +19,7 @@ namespace RealStateApp.Infraestructure.Identity.Services
         private readonly JwtSettings _jwtSettings;
 
         public AccountServiceForWebApi(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            IEmailService emailService, IOptions<JwtSettings> jwtSetting) : base(userManager, signInManager, emailService)
+            IEmailService emailService, IOptions<JwtSettings> jwtSetting, IMapper mapper) : base(userManager, signInManager, emailService, mapper)
         {
             _jwtSettings = jwtSetting.Value;
         }

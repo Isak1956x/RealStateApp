@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using RealStateApp.Core.Application.DTOs.Email;
 using RealStateApp.Core.Application.DTOs.Users;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Application.Interfaces.Infraestructure.Shared;
+using RealStateApp.Core.Application.Wrappers;
 using RealStateApp.Core.Domain.Base;
+using RealStateApp.Core.Domain.Enums;
 using RealStateApp.Infraestructure.Identity.Entities;
 using System.Text;
 
@@ -12,7 +15,8 @@ namespace RealStateApp.Infraestructure.Identity.Services
 {
     public class AccountServiceForWebApp : BaseAccountService, IAccountServiceForWebApp
     {
-        public AccountServiceForWebApp(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService) : base(userManager, signInManager, emailService)
+        public AccountServiceForWebApp(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService, IMapper mapper) 
+            : base(userManager, signInManager, emailService, mapper)
         {
         }
 
@@ -68,6 +72,9 @@ namespace RealStateApp.Infraestructure.Identity.Services
             });
             return Unit.Value;
         }
+
+
+
 
         protected override async Task<Result<Unit>> SendEmailVerifaction(AppUser user, string origin)
         {
