@@ -1,0 +1,138 @@
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using RealStateApp.Core.Application.DTOs.Users;
+using RealStateApp.Core.Application.Interfaces;
+using RealStateApp.Core.Application.ViewModels.Login;
+using RealStateApp.Presentation.WebApp.Helpers;
+
+namespace RealStateApp.Presentation.WebApp.Controllers.Login
+{
+    public class LoginController : Controller
+    {
+        private readonly IAccountServiceForWebApp _accountService;
+        private readonly IMapper _mapper;
+
+        public LoginController(IAccountServiceForWebApp accountService, IMapper mapper)
+        {
+            _accountService = accountService;
+            _mapper = mapper;
+        }
+
+        public IActionResult Index()
+        {
+            return View(new LoginVM());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(LoginVM loginVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(loginVM);
+            }
+            var result = await _accountService.Login(_mapper.Map<LoginRequestDTO>(loginVM));
+            if (result.IsSuccess)
+            {
+                // Handle successful login, e.g., redirect to a dashboard
+                return RedirectToAction("Index", "Home");
+            }
+            ModelState.AddModelError(string.Empty, result.Error);
+            return View(loginVM);
+        }
+
+        public IActionResult Register()
+        {
+            return View(new RegisterVM());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterVM registerVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(registerVM);
+            }
+            string origin = Request.Headers["origin"].ToString();
+            var result = await _accountService.RegisterAsync(_mapper.Map<RegisterRequestDTO>(registerVM), origin);
+            if (result.IsSuccess)
+            {
+                var path = FileManager.Upload(registerVM.PhotoPath, result.Value, "Users");
+                await _accountService.UpdateProfilePhoto(result.Value,path);
+                return RedirectToAction("Index", "Login");
+            }
+            ModelState.AddModelError(string.Empty, result.Error);
+            return View(registerVM);
+        }
+
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                ViewBag.ErrorMessage = "Invalid email confirmation link.";
+                return View("Error");
+            }
+            var result = _accountService.ConfirmEmailAsync(userId, token).Result;
+            if (result.IsSuccess)
+            {
+                return RedirectToAction("Index", new { Message = "EmailSended" });
+            }
+            return RedirectToAction("Index", new { errors = result.Error });
+            return View("Error");
+        }
+
+
+        public async Task<IActionResult> ForgottPassword()
+        {
+            var vm = new ForgottPasswordVM();
+            return View("ForgottPassword", vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgottPassword(ForgottPasswordVM vm)
+        {
+            string origin = Request.Headers["origin"].ToString();
+            var res = await _accountService.SendResetPasswordEmail(vm.Email, origin);
+            if (res.IsSuccess)
+                return RedirectToAction("Index", new { Message = "Se le envio el correo de restauracion" });
+            return RedirectToAction("Index", new { errors = res.Error });
+        }
+
+        public IActionResult ResetPassword(string token, string userId)
+        {
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("Login");
+            }
+
+            return View(new ResetPasswordVM
+            {
+                Token = token,
+                UserId = userId
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+
+            var result = await _accountService.ResetPasswordAsync(vm.UserId, vm.Token, vm.Password);
+
+            if (!result.IsSuccess)
+            {
+                return RedirectToAction("Index", new { errors = result.Error });
+            }
+
+            return RedirectToAction("Index", new { Message = "Se el ha reiniciado la contraseña" });
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await _accountService.SignOut();
+            return RedirectToAction("Index", "Home");
+        }
+    }
+}
