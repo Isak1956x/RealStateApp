@@ -2,15 +2,15 @@
 @model List<PropertyViewModel>
 @{
     ViewData["Title"] = "Home Page";
-	Layout = "_AgentLayout";
+    Layout = "_AgentLayout";
 }
-
-
 
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0">Mantenimiento de Propiedades</h2>
-        <a   asp-action="Create" class="btn btn-primary">+ Crear Nueva Propiedad</a>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i>
+        </a>
     </div>
 
     <div class="row g-4">
@@ -18,53 +18,51 @@
         {
             foreach (var propiedad in Model)
             {
-                 <div class="col-md-4">
-         <a asp-controller="Property" asp-action="Details" asp-route-Id="@(propiedad.Id)" style="text-decoration: none; color: inherit;">
-       <div class="card shadow-sm h-100 position-relative ">
-               <img src="@(propiedad.Images != null ? propiedad.Images!.FirstOrDefault()!.Url : "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg")"
-                class="card-img-top img-fluid"
-                style="height: 200px; object-fit: cover;"
-                alt="Imagen Propiedad" />
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100 position-relative">
+                        <a asp-controller="Property" asp-action="Details" asp-route-Id="@(propiedad.Id)" style="text-decoration: none; color: inherit;">
+                            <img src="@(propiedad.Images != null ? propiedad.Images!.FirstOrDefault()!.Url : "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg")"
+                                 class="card-img-top img-fluid"
+                                 style="height: 200px; object-fit: cover;"
+                                 alt="Imagen Propiedad" />
 
-           @if (!propiedad.IsAvailable)
-           {
-               <span class="badge bg-danger position-absolute top-0 end-0 m-2 fs-6">
-                   VENDIDA
-               </span>
+                            @if (!propiedad.IsAvailable)
+                            {
+                                <span class="badge bg-danger position-absolute top-0 end-0 m-2 fs-6">
+                                    VENDIDA
+                                </span>
+                            }
 
-           }
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">@propiedad.PropertyType!.Name</h5>
+                                <p class="card-text mb-1"><i class="bi bi-key"></i> @propiedad.Code</p>
+                                <p class="card-text mb-1"><i class="bi bi-house-gear-fill"></i> @propiedad.SaleType.Name</p>
+                                <p class="card-text mb-1">
+                                    <i class="bi bi-currency-dollar me-2"></i> RD @propiedad.Price
+                                </p>
+                                <p class="card-text mb-1">
+                                    <i class="bi bi-aspect-ratio me-2"></i> @propiedad.SizeInMeters m²
+                                </p>
+                                <p class="card-text mb-1">
+                                    <i class="bi bi-door-open me-2"></i> @propiedad.Bedrooms Hab.
+                                </p>
+                                <p class="card-text mb-3">
+                                    <i class="bi bi-bucket me-2"></i> @propiedad.Bathrooms Baños
+                                </p>
 
-           <div class="card-body d-flex flex-column">
-               <h5 class="card-title">@propiedad.PropertyType!.Name</h5>
-               <p class="card-text mb-1"><i class="bi bi-key"></i> @propiedad.Code</p>
-               <p class="card-text mb-1"><i class="bi bi-house-gear-fill"></i> @propiedad.SaleType.Name</p>
-               <p class="card-text mb-1">
-                   <i class="bi bi-currency-dollar me-2"></i> RD @propiedad.Price
-               </p>
-
-               <p class="card-text mb-1">
-                   <i class="bi bi-aspect-ratio me-2"></i> @propiedad.SizeInMeters m²
-               </p>
-
-               <p class="card-text mb-1">
-                   <i class="bi bi-door-open me-2"></i> @propiedad.Bedrooms Hab.
-               </p>
-
-               <p class="card-text mb-1">
-                   <i class="bi bi-bucket me-2"></i> @propiedad.Bathrooms Baños
-               </p>
-                                <div class="mt-auto d-flex justify-content-between">
-                                    <a asp-action="Edit" asp-route-id="@propiedad.Id" class="btn btn-warning btn-sm">
-                                        <i class="bi bi-pencil-square me-1"></i> Editar
+                                <!-- Botones alineados abajo a la derecha -->
+                                <div class="mt-auto d-flex justify-content-end gap-2">
+                                    <a asp-action="Edit" asp-route-id="@propiedad.Id" class="btn btn-warning btn-sm" title="Editar">
+                                        <i class="bi bi-pencil-square"></i>
                                     </a>
-                                    <a asp-action="Delete" asp-route-id="@propiedad.Id" class="btn btn-danger btn-sm">
-                                        <i class="bi bi-trash me-1"></i> Eliminar
+                                    <a asp-action="Delete" asp-route-id="@propiedad.Id" class="btn btn-danger btn-sm" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
                                     </a>
                                 </div>
-           </div>
-       </div>
-   </a>
-   </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             }
         }
         else

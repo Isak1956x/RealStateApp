@@ -1,89 +1,222 @@
 ﻿@using RealStateApp.Core.Application.ViewModels
 @model PropertyViewModel
 @{
-
     Layout = "_AgentLayout";
-    ViewData["Title"] = "Eliminar Propiedad";
+    ViewData["Title"] = "Detalle Propiedad";
+    bool isAgent = ViewBag.isAgent ?? false;
+
+    // Simulación de chat y ofertas
+    var chatMessages = new List<dynamic>
+    {
+        new { IsFromClient = true, Content = "Hola, estoy interesado en la propiedad", SentAt = DateTime.Now.AddMinutes(-30) },
+        new { IsFromClient = false, Content = "Hola, con gusto le puedo agendar una visita", SentAt = DateTime.Now.AddMinutes(-25) },
+        new { IsFromClient = true, Content = "Perfecto, ¿puede ser el viernes?", SentAt = DateTime.Now.AddMinutes(-20) },
+    };
+
+    var offers = new List<dynamic>
+    {
+        new { CreatedAt = DateTime.Now.AddDays(-5), Amount = 5400000, Status = "Rechazada" },
+        new { CreatedAt = DateTime.Now.AddDays(-10), Amount = 5000000, Status = "Rechazada" }
+    };
+
+    bool hasPendingOrAcceptedOffer = offers.Any(o => o.Status == "Pendiente" || o.Status == "Aceptada");
 }
 
-
 <div class="container my-4">
-    <div class="row">
-        <!-- Slider de imágenes -->
+    <div class="row g-4">
+        <!-- Columna izquierda -->
         <div class="col-lg-8">
-            <div id="propertyCarousel" class="carousel slide mb-3" data-bs-ride="carousel" style="height: 400px; max-width: 700px;">
-                <div class="carousel-inner h-100">
-                    @if (Model.Images != null && Model.Images.Any())
-                    {
-                        int i = 0;
-                        foreach (var img in Model.Images)
+            <div class="card shadow-sm">
+                <!-- Carrusel -->
+                <div id="propertyCarousel" class="carousel slide" data-bs-ride="carousel" style="max-height: 450px;">
+                    <div class="carousel-inner">
+                        @if (Model.Images != null && Model.Images.Any())
                         {
-                            <div class="carousel-item @(i == 0 ? "active" : "") h-100">
-                                <img src="@img.Url" class="d-block w-100 h-100 object-fit-cover" alt="Imagen propiedad" />
-                            </div>
-                            i++;
+                            int i = 0;
+                            foreach (var img in Model.Images)
+                            {
+                                <div class="carousel-item @(i == 0 ? "active" : "")">
+                                    <img src="@img.Url" class="d-block w-100" style="object-fit: cover; height: 450px;" alt="Imagen propiedad" />
+                                </div>
+                                i++;
+                            }
                         }
-                    }
-                    else
+                        else
+                        {
+                            <div class="carousel-item active bg-secondary d-flex align-items-center justify-content-center" style="height:450px;">
+                                <span class="text-white">No hay imágenes</span>
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    </button>
+                </div>
+
+                <!-- Info -->
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-secondary"><i class="bi bi-key"></i> Código: @Model.Code</span>
+                        <span class="badge bg-info text-dark"><i class="bi bi-house-door"></i> @Model.PropertyType.Name</span>
+                        <span class="badge bg-warning text-dark"><i class="bi bi-tags"></i> @Model.SaleType.Name</span>
+                    </div>
+
+                    <h3 class="text-success fw-bold">RD$ @Model.Price.ToString("N0")</h3>
+
+                    <div class="d-flex gap-4 my-3 text-muted">
+                        <span><i class="bi bi-door-closed"></i> @Model.Bedrooms @(Model.Bedrooms > 1 ? "Habitaciones" : "Habitación")</span>
+                        <span><i class="bi bi-bucket"></i> @Model.Bathrooms Baño(s)</span>
+                        <span><i class="bi bi-arrows-angle-expand"></i> @Model.SizeInMeters m²</span>
+                    </div>
+
+                    <h5 class="mt-4">Descripción</h5>
+                    <p class="text-secondary">@Model.Description</p>
+                    @if (Model.PropertyImprovements != null && Model.PropertyImprovements.Any())
                     {
-                        <div class="carousel-item active bg-secondary d-flex align-items-center justify-content-center" style="height:400px;">
-                            <span class="text-white">No images available</span>
+                        <p class="mt-2 mb-1"><strong>Mejoras:</strong></p>
+                        <ul class="list-unstyled mb-0">
+                            @foreach (var improvement in Model.PropertyImprovements)
+                            {
+                                <li><i class="bi bi-check-circle-fill text-success me-1"></i>@improvement.Improvement.Name</li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna derecha -->
+        <div class="col-lg-4">
+            <!-- Agente -->
+            <div class="card p-3 shadow-sm mb-4">
+                <h6 class="text-primary fw-bold">Asesor inmobiliario</h6>
+                <div class="d-flex align-items-center mb-3">
+                    <img src="https://d1rvv10iovlkkr.cloudfront.net/wp-content/uploads/2024/07/a-male-real-estate-agent-headshot-generated-by-ai-ease-ai-headshot-creator.webp"
+                         alt="Foto agente"
+                         class="rounded-circle me-3"
+                         style="width: 70px; height: 70px; object-fit: cover;">
+                    <div>
+                        <p class="mb-1 fw-semibold">Ricardo</p>
+                        <p class="mb-0 text-muted"><i class="bi bi-telephone"></i> 809</p>
+                        <p class="mb-0 text-muted"><i class="bi bi-whatsapp"></i> 809</p>
+                        <p class="mb-0 text-muted"><i class="bi bi-envelope"></i> tunene</p>
+                    </div>
+                </div>
+                <button class="btn btn-primary w-100"><i class="bi bi-person-lines-fill"></i> Solicitar Asesoría</button>
+            </div>
+            @if(isAgent)
+            {
+            <!-- Chat -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-chat-dots"></i> Chat con el agente
+                </div>
+
+                <div class="card-body" style="max-height: 200px; overflow-y: auto;">
+                    @foreach (var msg in chatMessages)
+                    {
+                        <div class="mb-2">
+                            <strong>@(msg.IsFromClient ? "Tú" : "Agente"):</strong> @msg.Content
+                            <div class="text-muted" style="font-size: 0.8rem;">@msg.SentAt.ToString("g")</div>
                         </div>
                     }
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Anterior</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Siguiente</span>
-                </button>
+
+                <div class="card-footer">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger mt-2">@TempData["ErrorMessage"]</div>
+                    }
+                    <form asp-controller="Chat" asp-action="AddMessage" method="post" class="d-flex w-100">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="propertyId" value="@Model.Id" />
+                        <input name="message" type="text" class="form-control me-2" placeholder="Escribe tu mensaje..." required />
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
 
-            <!-- Código propiedad -->
-            <p><i class="bi bi-key"></i> <strong> Código: </strong> @Model.Code</p>
-
-            <!-- Tipo de propiedad y tipo de venta -->
-            <p><strong>Tipo: </strong> @Model.PropertyType.Name</p>
-            <p><i class="bi bi-house-gear-fill"></i> <strong> Venta: </strong> @Model.SaleType.Name</p>
-
-            <!-- Precio -->
-            <h3 class="text-danger">US$ @Model.Price.ToString("N0")</h3>
-
-            <!-- Habitaciones, baños, tamaño -->
-            <div class="d-flex gap-3 mb-3">
-                <span><i class="bi bi-door-closed"></i> @Model.Bedrooms @(Model.Bedrooms > 1 ? "Habitaciones" : "Habitacion")</span>
-                <span><i class="bi bi-bucket"></i> @Model.Bathrooms Baño(s)</span>
-                <span><i class="bi bi-arrows-angle-expand"></i> @Model.SizeInMeters m²</span>
+            <!-- Ofertas -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-cash-coin"></i> Mis Ofertas</span>
+                    <button class="btn btn-light btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalNuevaOferta"
+                    @(hasPendingOrAcceptedOffer ? "disabled" : "")>
+                        <i class="bi bi-plus-circle"></i> Nueva oferta
+                    </button>
+                </div>
+                <div class="card-body">
+                    @if (offers.Any())
+                    {
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Monto</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var offer in offers)
+                                {
+                                    <tr>
+                                        <td>@offer.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                        <td>RD$ @offer.Amount.ToString("N0")</td>
+                                        <td>
+                                            @if (offer.Status == "Pendiente")
+                                            {
+                                                <span class="badge bg-warning text-dark">Pendiente</span>
+                                            }
+                                            else if (offer.Status == "Aceptada")
+                                            {
+                                                <span class="badge bg-success">Aceptada</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">Rechazada</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No has hecho ofertas todavía.</p>
+                    }
+                </div>
             </div>
 
-            <!-- Descripción -->
-            <h5>Descripción</h5>
-            <p>@Model.Description</p>
-
-            <!-- Mejoras -->
-         
-        </div>
-
-        <!-- Datos del agente -->
-        <div class="col-lg-4">
-            <div class="card p-3 shadow-sm">
-                <h6>Asesor inmobiliario</h6>
-                <div class="d-flex align-items-center mb-3">
-                    <img src="https://d1rvv10iovlkkr.cloudfront.net/wp-content/uploads/2024/07/a-male-real-estate-agent-headshot-generated-by-ai-ease-ai-headshot-creator.webp" alt="Foto agente" class="rounded-circle me-3" style="width: 70px; height: 70px; object-fit: cover;">
-                    <div>
-                        <p class="mb-1">Ricardo</p>
-                        <p class="mb-0"><i class="bi bi-telephone"></i>809</p>
-                        <p class="mb-0"><i class="bi bi-whatsapp"></i> 809</p>
-                        <p class="mb-0"><i class="bi bi-envelope"></i> tunene</p>
+            <!-- Modal Nueva Oferta -->
+            <div class="modal fade" id="modalNuevaOferta" tabindex="-1" aria-labelledby="modalNuevaOfertaLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title" id="modalNuevaOfertaLabel">Hacer nueva oferta</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="montoOferta" class="form-label">Monto (RD$)</label>
+                            <input type="number" class="form-control" id="montoOferta" placeholder="Ej: 5400000" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success" id="btnEnviarOferta">
+                                <i class="bi bi-send"></i> Enviar oferta
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <button class="btn btn-primary w-100">Solicitar Asesoría</button>
             </div>
+            }
         </div>
-
     </div>
 </div>
-
-

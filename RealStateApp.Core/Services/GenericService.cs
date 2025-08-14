@@ -79,7 +79,7 @@ namespace RealStateApp.Core.Application.Services
                     return null;
                 }
 
-                DtoModel dto = _mapper.Map<DtoModel>(entity);
+                DtoModel dto = _mapper.Map<DtoModel>(entity.Value);
                 return dto;
             }
             catch (Exception)

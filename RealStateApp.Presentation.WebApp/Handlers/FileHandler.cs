@@ -1,7 +1,7 @@
-﻿namespace RealStateApp.Presentation.WebApp.Helpers
+﻿namespace RealStateApp.Presentation.WebApp.Handlers
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S125:Sections of code should not be commented out", Justification = "<Pending>")]
-    public static class FileManager
+    public static class FileHandler
     {
         public static string? Upload(IFormFile? file, int id, string folderName, bool isEditMode = false, string? imagePath = "")
         {
