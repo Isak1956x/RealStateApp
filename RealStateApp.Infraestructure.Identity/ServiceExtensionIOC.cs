@@ -15,7 +15,7 @@ namespace RealStateApp.Infraestructure.Identity
 {
     public static class ServiceExtensionIoC
     {
-
+         
         public static IServiceCollection AddIdentityServiceForWebApp(this IServiceCollection services, IConfiguration configuration)
         {
             GeneralConfig(services, configuration);
