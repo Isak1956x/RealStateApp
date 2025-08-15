@@ -17,6 +17,7 @@
     <ProjectReference Include="..\RealState.Infraestructure.Persistence\RealState.Infraestructure.Persistence.csproj" />
     <ProjectReference Include="..\RealStateApp.Core.Domain\RealStateApp.Core.Domain.csproj" />
     <ProjectReference Include="..\RealStateApp.Core\RealStateApp.Core.Application.csproj" />
+    <ProjectReference Include="..\RealStateApp.Infraestructure.Identity\RealStateApp.Infraestructure.Identity.csproj" />
     <ProjectReference Include="..\RealStateApp.Infraestructure.Shared\RealStateApp.Infraestructure.Shared.csproj" />
   </ItemGroup>
 

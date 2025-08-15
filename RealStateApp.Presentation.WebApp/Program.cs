@@ -1,5 +1,6 @@
 using RealState.Infraestructure.Persistence;
 using RealStateApp.Core.Application;
+using RealStateApp.Infraestructure.Identity;
 
 namespace RealStateApp.Presentation.WebApp
 {
@@ -12,6 +13,7 @@ namespace RealStateApp.Presentation.WebApp
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddPersistenceLayerIoc(builder.Configuration);
+            builder.Services.AddIdentityServiceForWebApp(builder.Configuration);
             builder.Services.AddApplicationLayerIoc();
 
             var app = builder.Build();
