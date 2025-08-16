@@ -2,7 +2,7 @@
 @model HomeViewModel
 @{
     ViewData["Title"] = "Home Page";
-    Layout = "_GeneralLayout";
+    Layout = "_ClientLayout";
 }
 <form method="get" asp-action="Index" class="mb-4" style="max-width: 350px;">
     <div class="input-group">
@@ -60,13 +60,20 @@
             <div class="col-md-4">
                 <a asp-controller="Property" asp-action="Details" asp-route-Id="@(propiedad.Id)" style="text-decoration: none; color: inherit;">
                     <div class="card shadow-sm h-100 position-relative ">
-                     
+                        @{bool isFavorite = Model.FavPropertiesIds!.Contains(propiedad.Id); }
+                        <!-- Botón de favoritos -->
+                        <form method="post" asp-controller="Property" asp-action="AddFavoriteProperty" asp-route-id="@propiedad.Id" asp-route-isFavorite="@isFavorite"
+                              class="position-absolute top-0 end-0 m-2">
+                            <button type="submit" class="btn btn-danger btn-sm rounded-circle shadow-sm">
+                                <i class="@(isFavorite ? "bi bi-heart-fill" : "bi bi-heart")"></i>
+                            </button>
+                        </form>
+
                         <img src="@(propiedad.Images != null ? propiedad.Images!.FirstOrDefault()!.Url : "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg")"
                          class="card-img-top img-fluid"
                          style="height: 200px; object-fit: cover;"
                          alt="Imagen Propiedad" />
 
-              
 
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">@propiedad.PropertyType!.Name</h5>

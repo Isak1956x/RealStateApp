@@ -35,7 +35,7 @@ namespace RealStateApp.Core.Application.ViewModels.Login
 
         [Required(ErrorMessage = "Id Number is required.")]
         [RegularExpression(@"^\d{11}$", ErrorMessage = "Id Number must be 11 digits.")]
-        public string? IdNumber { get; set; } 
+        public string? IdNumber { get; set; }
 
         [Phone(ErrorMessage = "Invalid phone number format.")]
         [Required(ErrorMessage = "Phone Number is required.")]

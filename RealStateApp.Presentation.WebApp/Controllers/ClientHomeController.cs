@@ -7,18 +7,20 @@ using RealStateApp.Presentation.WebApp.Models;
 
 namespace RealStateApp.Presentation.WebApp.Controllers
 {
-    public class HomeController : Controller
+    public class ClientHomeController : Controller
     {
 
- private readonly IPropertyService _propertyService;
- private readonly IPropertyTypeService _propertyTypeServices;
  private readonly IMapper _mapper;
+ private readonly IFavoritePropertyService _favoritePropertyService;
+        private readonly IPropertyService _propertyService;
+        private readonly IPropertyTypeService _propertyTypeServices;
 
-        public HomeController(IPropertyService propertyService, IPropertyTypeService propertyTypeServices, IMapper mapper)
+        public ClientHomeController(IMapper mapper, IFavoritePropertyService favoritePropertyService, IPropertyService propertyService, IPropertyTypeService propertyTypeService)
         {
-            _propertyService = propertyService;
-            _propertyTypeServices = propertyTypeServices;
             _mapper = mapper;
+            _favoritePropertyService = favoritePropertyService;
+            _propertyService = propertyService;
+            _propertyTypeServices = propertyTypeService;
         }
 
         public async Task<IActionResult> Index(HomeViewModel? filters)
@@ -26,7 +28,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers
             var properties = await _propertyService.GetAllListWithInclude(["PropertyType", "SaleType", "PropertyImprovements", "Images"]);
             var propertyTypes = await _propertyTypeServices.GetAll();
 
-      
+            var favPropertiesIds = (await _favoritePropertyService.GetAll()).Where(f => f.UserId == "g").Select(f => f.PropertyId).ToList();
             var propertiesVm = _mapper.Map<List<PropertyViewModel>>(properties)
                 .Where(p => p.IsAvailable)
                 .OrderByDescending(p => p.CreateAt).ToList();
@@ -71,16 +73,27 @@ namespace RealStateApp.Presentation.WebApp.Controllers
             var homeVm = new HomeViewModel
             {
                 Properties = propertiesVm,
-                PropertyTypes = propertyTypesVm
+                PropertyTypes = propertyTypesVm,
+                FavPropertiesIds = favPropertiesIds
             };
             
             return View(homeVm);
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> MyProperties()
         {
-            return View();
+            var propertyTypes = await _propertyTypeServices.GetAll();
+            var favProperties = (await _favoritePropertyService.GetAllListWithInclude(["Property"])).Where(f => f.UserId == "g").Select(p => p.PropertyId);
+            var properties = (await _propertyService.GetAllListWithInclude(["PropertyType", "SaleType", "PropertyImprovements", "Images"])).Where(p => favProperties.Contains(p.Id));
+            var favPropertiesVm = _mapper.Map<List<PropertyViewModel>>(properties);
+            var myPropertiesVm = new MyPropertiesViewModel
+            {
+                Properties = favPropertiesVm,
+                PropertyTypes = _mapper.Map<List<PropertyTypeViewModel>>(propertyTypes),
+            };
+            return View(myPropertiesVm);
         }
+      
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

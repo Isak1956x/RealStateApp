@@ -11,20 +11,30 @@ namespace RealStateApp.Presentation.WebApp.Controllers
     public class AgentHomeController : Controller
     {
         private readonly IPropertyService _propertyService;
+        private readonly IPropertyTypeService _propertyTypeService;
         private readonly IMapper _mapper;
 
-        public AgentHomeController(IPropertyService propertyService, IMapper mapper)
+        public AgentHomeController(IPropertyService propertyService, IPropertyTypeService propertyTypeService, IMapper mapper)
         {
             _propertyService = propertyService;
+            _propertyTypeService = propertyTypeService;
             _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
         {
             var properties = await _propertyService.GetAllListWithInclude(["PropertyType", "SaleType", "PropertyImprovements", "Images"]);
-            var propertiesVm = _mapper.Map<List<PropertyViewModel>>(properties).ToList();
+            var propertyTypes = await _propertyTypeService.GetAll();
+            var propertiesVm = _mapper.Map<List<PropertyViewModel>>(properties)
+                .Where(p => p.AgentId == "d").ToList();
 
-            return View(propertiesVm);
+            var AgentHomeVm = new HomeViewModel
+            {
+                Properties = propertiesVm,
+                PropertyTypes = _mapper.Map<List<PropertyTypeViewModel>>(propertyTypes)
+            };
+            
+            return View(AgentHomeVm);
         }
 
         public IActionResult Privacy()

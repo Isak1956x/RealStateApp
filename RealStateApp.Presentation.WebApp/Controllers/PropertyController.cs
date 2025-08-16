@@ -1,10 +1,10 @@
-﻿using AutoMapper;
+﻿using System.Runtime.InteropServices;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RealStateApp.Core.Application.DTOs;
 using RealStateApp.Core.Application.Services;
 using RealStateApp.Core.Application.ViewModels;
-using RealStateApp.Core.Domain.Entities;
-using RealStateApp.Presentation.WebApp.Helpers;
+using RealStateApp.Presentation.WebApp.Handlers;
 
 namespace RealStateApp.Presentation.WebApp.Controllers
 {
@@ -16,15 +16,17 @@ namespace RealStateApp.Presentation.WebApp.Controllers
         private readonly ISaleTypeService _saleTypeService;
         private readonly IPropertyTypeService _propertyTypeService;
         private readonly IPropertyImageService _propertyImageService;
+        private readonly IFavoritePropertyService _favoritePropertyService;
         private readonly IMapper _mapper;
 
-        public PropertyController(IPropertyService propertyService, IImprovementService improvementService, ISaleTypeService saleTypeService, IPropertyTypeService propertyTypeService, IPropertyImageService propertyImageService, IMapper mapper)
+        public PropertyController(IPropertyService propertyService, IImprovementService improvementService, ISaleTypeService saleTypeService, IPropertyTypeService propertyTypeService, IPropertyImageService propertyImageService, IFavoritePropertyService favoritePropertyService, IMapper mapper)
         {
             _propertyService = propertyService;
             _improvementService = improvementService;
             _saleTypeService = saleTypeService;
             _propertyTypeService = propertyTypeService;
             _propertyImageService = propertyImageService;
+            _favoritePropertyService = favoritePropertyService;
             _mapper = mapper;
         }
 
@@ -122,7 +124,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers
                         var imageDto = new PropertyImageDto
                         {
                             PropertyId = result.Id,
-                            Url = FileManager.Upload(image, result.Id!, "Images")!
+                            Url = FileHandler.Upload(image, result.Id!, "Images")!
                         };
                         await _propertyImageService.AddAsync(imageDto);
                     }
@@ -203,7 +205,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers
                         var imageDto = new PropertyImageDto
                         {
                             PropertyId = result.Id,
-                            Url = FileManager.Upload(image, result.Id!, "Images")!
+                            Url = FileHandler.Upload(image, result.Id!, "Images")!
                         };
                         await _propertyImageService.AddAsync(imageDto);
                     }
@@ -230,12 +232,57 @@ namespace RealStateApp.Presentation.WebApp.Controllers
           
             return RedirectToAction("Index");
         }
-        public async Task< IActionResult> Details(int Id)
+        public async Task< IActionResult> Details(int Id, bool isAgent = false)
         {
             var properties = await _propertyService.GetAllListWithInclude(["PropertyType", "SaleType", "PropertyImprovements", "Images"]);
+            var improvements = await _improvementService.GetAll();
+            var improvementsVm = _mapper.Map<List<ImprovementViewModel>>(improvements);
             var property = properties.FirstOrDefault(p => p.Id == Id);
+           
             var vm = _mapper.Map<PropertyViewModel>(property);
+            foreach (var pi in vm.PropertyImprovements)
+            {
+                var improvement = improvementsVm.FirstOrDefault(i => i.Id == pi.ImprovementId);
+                if (improvement != null)
+                {
+                    pi.Improvement = _mapper.Map<ImprovementViewModel>(improvement);
+                }
+            }
+            if (isAgent)
+            {
+                ViewBag.IsAgent = true;
+            }
             return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddFavoriteProperty(int Id, bool isFavorite, bool myProperties = false)
+        {
+            if(isFavorite)
+            {
+                var deleteProperty = (await _favoritePropertyService.GetAll())
+                    .FirstOrDefault(f => f.PropertyId == Id && f.UserId == "g");
+                if (deleteProperty != null)
+                {
+                    await _favoritePropertyService.DeleteAsync(deleteProperty.FavoritePropertyId);
+                }
+                if(myProperties)
+                {
+                    return RedirectToRoute(new { controller = "ClientHome", action = "MyProperties" });
+                }
+                    return RedirectToRoute(new { controller = "ClientHome", action = "Index" });
+            }
+            var favProperty = new FavoritePropertyDto
+            {
+                PropertyId = Id,
+                UserId = "g"
+            };
+            await _favoritePropertyService.AddAsync(favProperty);
+            if (myProperties)
+            {
+                return RedirectToRoute(new { controller = "ClientHome", action = "MyProperties" });
+            }
+            return RedirectToRoute(new { controller = "ClientHome", action = "Index" });
         }
     }
 }

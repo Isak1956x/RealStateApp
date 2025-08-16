@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace RealStateApp.Core.Application.ViewModels
 {
-    public class HomeViewModel
+    public class MyPropertiesViewModel
     {
         public List<PropertyViewModel>? Properties { get; set; }
         public List<PropertyTypeViewModel>? PropertyTypes { get; set; }
-        public List<int> ?FavPropertiesIds { get; set; }
         public int? PropertyTypeId { get; set; }
         public decimal? MinPrice { get; set; }
         public decimal? MaxPrice { get; set; }

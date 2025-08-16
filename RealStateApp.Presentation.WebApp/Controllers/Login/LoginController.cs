@@ -5,7 +5,7 @@ using RealStateApp.Core.Application.Helpers.Enums;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Application.ViewModels.Login;
 using RealStateApp.Core.Domain.Enums;
-using RealStateApp.Presentation.WebApp.Helpers;
+using RealStateApp.Presentation.WebApp.Handlers;
 
 namespace RealStateApp.Presentation.WebApp.Controllers.Login
 {
@@ -66,7 +66,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
             var result = await _accountService.RegisterAsync(_mapper.Map<RegisterRequestDTO>(registerVM), origin);
             if (result.IsSuccess)
             {
-                var path = FileManager.Upload(registerVM.PhotoPath, result.Value, "Users");
+                var path = FileHandler.Upload(registerVM.PhotoPath, result.Value, "Users");
                 await _accountService.UpdateProfilePhoto(result.Value,path);
                 return RedirectToAction("Index", "Login", new { Message = "Please confirm your email."});
             }

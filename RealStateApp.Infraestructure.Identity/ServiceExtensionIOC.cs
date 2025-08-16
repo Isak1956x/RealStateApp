@@ -172,6 +172,8 @@ namespace RealStateApp.Infraestructure.Identity
                 await DefaultRoles.SeedAsync(roleManager);
                 await DefaultIdentUser.SeedAsync(userManager);
                 //await DefaultIdentUser.SeedAsync(userManager);
+                await DefaultAdminUser.SeedAsync(userManager);
+                await DefaultAdminUser.SeedAsync(userManager);
             }
         }
     }
