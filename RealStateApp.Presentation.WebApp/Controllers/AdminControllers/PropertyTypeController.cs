@@ -26,7 +26,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
 
         public IActionResult New()
         {
-            return View("Save", new PropertyTypeWriteVM());
+            return View("Save", new PropertyTypeWriteVM() { IsCreating = true});
         }
 
         [HttpPost]
@@ -88,7 +88,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
                 Controller = "PropertyType",
                 ActionDestination = "Delete"
             };
-            return View(Vm);
+            return View("GenericAlert",Vm);
         }
 
         [HttpPost]
@@ -100,7 +100,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
                 return RedirectToAction("Index");
             }
             ViewBag.Error = "Error deleting property type. Please try again.";  
-            return View(vm);
+            return View("GenericAlert",vm);
 
         }
     }

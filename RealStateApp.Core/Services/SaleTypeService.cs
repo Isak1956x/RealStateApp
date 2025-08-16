@@ -22,9 +22,9 @@ namespace RealStateApp.Core.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<PropertyTypeDto>> GetAllSalesTypesAsync()
+        public async Task<IEnumerable<SaleTypeDto>> GetAllSalesTypesAsync()
             => await _saleTypeRepository.AsQuery()
-                      .Select(st => new PropertyTypeDto
+                      .Select(st => new SaleTypeDto
                       {
                           Id = st.Id,
                           Name = st.Name,

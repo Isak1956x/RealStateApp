@@ -22,7 +22,7 @@ namespace RealStateApp.Core.Application.ViewModels.Login
         [Required(ErrorMessage = "Last Name is required.")]
         public string LastName { get; set; }
 
-        public IEnumerable<Ident<int>> Roles { get; set; } 
+        public IEnumerable<Ident<int>>? Roles { get; set; } 
 
         [Required(ErrorMessage = "Role is required.")]
         public int RoleId { get; set; }

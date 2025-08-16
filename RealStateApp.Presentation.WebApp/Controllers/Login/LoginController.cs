@@ -40,7 +40,12 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
             {
                 return View(loginVM);
             }
-            var result = await _accountService.Login(_mapper.Map<LoginRequestDTO>(loginVM));
+            var dto = new LoginRequestDTO
+            {
+                Email = loginVM.Email,
+                Password = loginVM.Password
+            };
+            var result = await _accountService.Login(dto);
             if (result.IsSuccess)
             {
                 // Handle successful login, e.g., redirect to a dashboard
@@ -60,18 +65,31 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
         {
             if (!ModelState.IsValid)
             {
+                registerVM.Roles = EnumHelper.GetEnumsAsIdent<UserRoles>().Where(i => i.Id != 1 && i.Id != 4);
                 return View(registerVM);
             }
             string origin = Request.Headers["origin"].ToString();
-            var result = await _accountService.RegisterAsync(_mapper.Map<RegisterRequestDTO>(registerVM), origin);
+            var dTO = new RegisterRequestDTO
+            {
+                IdNumber = registerVM.IdNumber,
+                Email = registerVM.Email,
+                FirstName = registerVM.FirstName,
+                LastName = registerVM.LastName,
+                Password = registerVM.Password,
+                PhoneNumber = registerVM.PhoneNumber,
+                RoleId = registerVM.RoleId,
+                UserName = registerVM.UserName,
+
+            };
+            var result = await _accountService.RegisterAsync(dTO, origin);
             if (result.IsSuccess)
             {
                 var path = FileManager.Upload(registerVM.PhotoPath, result.Value, "Users");
                 await _accountService.UpdateProfilePhoto(result.Value,path);
                 return RedirectToAction("Index", "Login", new { Message = "Please confirm your email."});
             }
-            ModelState.AddModelError(string.Empty, result.Error);
-            return View(registerVM);
+            return RedirectToAction("Index", "Login", new { Error = result.Error });
+            
         }
 
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
@@ -86,7 +104,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
             {
                 return RedirectToAction("Index", new { Message = "EmailSended" });
             }
-            return RedirectToAction("Index", new { errors = result.Error });
+            return RedirectToAction("Index", new { Error = result.Error });
             return View("Error");
         }
 
@@ -104,7 +122,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
             var res = await _accountService.SendResetPasswordEmail(vm.Email, origin);
             if (res.IsSuccess)
                 return RedirectToAction("Index", new { Message = "Se le envio el correo de restauracion" });
-            return RedirectToAction("Index", new { errors = res.Error });
+            return RedirectToAction("Index", new { Error = res.Error });
         }
 
         public IActionResult ResetPassword(string token, string userId)

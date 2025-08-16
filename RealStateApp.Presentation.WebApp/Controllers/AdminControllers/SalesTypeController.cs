@@ -26,7 +26,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
 
         public IActionResult New()
         {
-            return View(new SalesTypeWritteVM());
+            return View("Save",new SalesTypeWritteVM() { IsCreating = true});
         }
 
         [HttpPost]
@@ -43,7 +43,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
                 return RedirectToAction("Index");
             }
             ViewBag.Error = "Error creating property type. Please try again.";
-            return View(salesTypeVM);
+            return View("Save", salesTypeVM);
         }
 
         public async Task<IActionResult> Update(int id)
@@ -55,7 +55,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
             }
             var salesTypeVM = _mapper.Map<SalesTypeWritteVM>(salesType);
             salesTypeVM.IsCreating = false;
-            return View(salesTypeVM);
+            return View("Save", salesTypeVM);
         }
 
         [HttpPost]
@@ -72,7 +72,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
                 return RedirectToAction("Index");
             }
             ViewBag.Error = "Error updating property type. Please try again.";
-            return View(salesTypeVM);
+            return View("Save", salesTypeVM);
         }
 
         public async Task<IActionResult> Delete(int id)
@@ -87,7 +87,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
                 Controller = "SalesType",
                 ActionDestination = "Delete"
             };
-            return View(Vm);
+            return View("GenericAlert",Vm);
         }
 
         [HttpPost]
@@ -103,7 +103,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
                 return RedirectToAction("Index");
             }
             ViewBag.Error = "Error deleting property type. Please try again.";
-            return View(alertVM);
+            return View("GenericAlert", alertVM);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
 
         public IActionResult New()
         {
-            return View(new ImprovmentWritteVM());
+            return View("Save", new ImprovmentWritteVM());
         }
 
         [HttpPost]
@@ -45,7 +45,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
                 return RedirectToAction("Index");
             }
             ViewBag.Error = "Error creating property type. Please try again.";
-            return View(VM);
+            return View("Save",VM);
         }
 
         public async Task<IActionResult> Update(int id)
@@ -57,7 +57,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
             }
             var vm = _mapper.Map<ImprovmentWritteVM>(improvement);
             vm.IsCreating = false;
-            return View(vm);
+            return View("Save", vm);
         }
 
         [HttpPost]
@@ -74,7 +74,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
                 return RedirectToAction("Index");
             }
             ViewBag.Error = "Error updating property type. Please try again.";
-            return View(vm);
+            return View("Save", vm);
         }
 
         public async Task<IActionResult> Delete(int id)
@@ -90,7 +90,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
                 Controller = "Improvment",
                 ActionDestination = "Delete"
             };
-            return View(Vm);
+            return View("GenericAlert",Vm);
         }
 
         [HttpPost]

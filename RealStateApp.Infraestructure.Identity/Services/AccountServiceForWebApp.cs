@@ -41,7 +41,8 @@ namespace RealStateApp.Infraestructure.Identity.Services
                 UserName = user.UserName,
                 Email = user.Email,
                 FirstName = user.FirstName,
-                LastName = user.LastName
+                LastName = user.LastName,
+                IsVerified = user.EmailConfirmed,
             };
         }
 
