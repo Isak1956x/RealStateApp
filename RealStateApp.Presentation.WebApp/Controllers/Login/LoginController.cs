@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RealStateApp.Core.Application.DTOs.Users;
+using RealStateApp.Core.Application.Helpers.Enums;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Application.ViewModels.Login;
 using RealStateApp.Core.Domain.Enums;
@@ -19,9 +21,16 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
             _mapper = mapper;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string Error = null, string Message = null)
         {
-            var accounts = _accountService.GetByRole(UserRoles.Agent);
+            if (!string.IsNullOrEmpty(Error))
+            {
+                ViewBag.Error = Error;
+            }
+            if (!string.IsNullOrEmpty(Message))
+            {
+                ViewBag.Message = Message;
+            }
             return View(new LoginVM());
         }
 
@@ -38,13 +47,13 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
                 // Handle successful login, e.g., redirect to a dashboard
                 return RedirectToAction("Index", "Home");
             }
-            ModelState.AddModelError(string.Empty, result.Error);
+            ViewBag.Error = result.Error;
             return View(loginVM);
         }
 
         public IActionResult Register()
         {
-            return View(new RegisterVM());
+            return View(new RegisterVM() { Roles = EnumHelper.GetEnumsAsIdent<UserRoles>().Where(i => i.Id != 1 && i.Id != 4) });
         }
 
         [HttpPost]
@@ -52,6 +61,10 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
         {
             if (!ModelState.IsValid)
             {
+                registerVM.Roles = EnumHelper
+                    .GetEnumsAsIdent<UserRoles>()
+                    .Where(i => i.Id != 1 && i.Id != 4);
+
                 return View(registerVM);
             }
             string origin = Request.Headers["origin"].ToString();
@@ -59,8 +72,8 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
             if (result.IsSuccess)
             {
                 var path = FileHandler.Upload(registerVM.PhotoPath, result.Value, "Users");
-                await _accountService.UpdateProfilePhoto(result.Value,path);
-                return RedirectToAction("Index", "Login");
+                await _accountService.UpdateProfilePhoto(result.Value, path);
+                return RedirectToAction("Index", "Login", new { Message = "Please confirm your email." });
             }
             ModelState.AddModelError(string.Empty, result.Error);
             return View(registerVM);

@@ -22,7 +22,7 @@ namespace RealStateApp.Core.Application.ViewModels.Login
         [Required(ErrorMessage = "Last Name is required.")]
         public string LastName { get; set; }
 
-        public IEnumerable<Ident<int>> Roles { get; set; }
+        public IEnumerable<Ident<int>>? Roles { get; set; }
 
         [Required(ErrorMessage = "Role is required.")]
         public int RoleId { get; set; }
@@ -33,8 +33,8 @@ namespace RealStateApp.Core.Application.ViewModels.Login
         [DataType(DataType.Upload)]
         public IFormFile PhotoPath { get; set; }
 
-        [Required(ErrorMessage = "Id Number is required.")]
-        [RegularExpression(@"^\d{11}$", ErrorMessage = "Id Number must be 11 digits.")]
+        //[Required(ErrorMessage = "Id Number is required.")]
+        //[RegularExpression(@"^\d{11}$", ErrorMessage = "Id Number must be 11 digits.")]
         public string? IdNumber { get; set; }
 
         [Phone(ErrorMessage = "Invalid phone number format.")]
