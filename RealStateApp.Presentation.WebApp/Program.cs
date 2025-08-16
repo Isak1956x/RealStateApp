@@ -1,6 +1,5 @@
 using RealState.Infraestructure.Persistence;
 using RealStateApp.Core.Application;
-using RealStateApp.Presentation.WebApp.Handlers;
 
 namespace RealStateApp.Presentation.WebApp
 {
@@ -13,6 +12,7 @@ namespace RealStateApp.Presentation.WebApp
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddPersistenceLayerIoc(builder.Configuration);
+            builder.Services.AddIdentityServiceForWebApp(builder.Configuration);
             builder.Services.AddApplicationLayerIoc();
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
