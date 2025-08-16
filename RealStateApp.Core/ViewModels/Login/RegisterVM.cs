@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
+using RealStateApp.Core.Domain.Base;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RealStateApp.Core.Application.ViewModels.Login
 {
@@ -26,6 +22,9 @@ namespace RealStateApp.Core.Application.ViewModels.Login
         [Required(ErrorMessage = "Last Name is required.")]
         public string LastName { get; set; }
 
+        public IEnumerable<Ident<int>> Roles { get; set; }
+
+        [Required(ErrorMessage = "Role is required.")]
         public int RoleId { get; set; }
 
         [Required(ErrorMessage = "User Name is required.")]
@@ -36,7 +35,7 @@ namespace RealStateApp.Core.Application.ViewModels.Login
 
         [Required(ErrorMessage = "Id Number is required.")]
         [RegularExpression(@"^\d{11}$", ErrorMessage = "Id Number must be 11 digits.")]
-        public string? IdNumber { get; set; } 
+        public string? IdNumber { get; set; }
 
         [Phone(ErrorMessage = "Invalid phone number format.")]
         [Required(ErrorMessage = "Phone Number is required.")]
