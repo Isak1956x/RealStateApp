@@ -10,5 +10,6 @@ namespace RealStateApp.Core.Application.Services
 {
     public interface ISaleTypeService : IGenericService<SaleTypeDto>
     {
+        Task<IEnumerable<PropertyTypeDto>> GetAllSalesTypesAsync();
     }
 }

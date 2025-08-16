@@ -5,10 +5,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Domain.Settings;
 using RealStateApp.Infraestructure.Identity.Context;
 using RealStateApp.Infraestructure.Identity.Entities;
 using RealStateApp.Infraestructure.Identity.Seeds;
+using RealStateApp.Infraestructure.Identity.Service;
+using RealStateApp.Infraestructure.Identity.Services;
 using System.Text;
 
 namespace RealStateApp.Infraestructure.Identity
@@ -55,10 +58,10 @@ namespace RealStateApp.Infraestructure.Identity
             {
                 opt.ExpireTimeSpan = TimeSpan.FromHours(4);
                 opt.SlidingExpiration = true;
-                opt.LoginPath = "/User";
-                opt.AccessDeniedPath = "/User";
+                opt.LoginPath = "/Login";
+                opt.AccessDeniedPath = "/Login";
             });
-            //services.AddScoped<IAccountServiceForWebApp, AccountServiceForWebApp>();
+            services.AddScoped<IAccountServiceForWebApp, AccountServiceForWebApp>();
 
             return services;
         }
@@ -139,7 +142,7 @@ namespace RealStateApp.Infraestructure.Identity
                 };
 
             });
-            //services.AddScoped<IAccountServiceForWebApp, AccountServiceForWebApp>();
+            services.AddScoped<IAccountServiceForApi, AccountServiceForWebApi>();
 
             return services;
         }
@@ -167,6 +170,7 @@ namespace RealStateApp.Infraestructure.Identity
                 var userManager = provider.GetRequiredService<UserManager<AppUser>>();
                 var roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
                 await DefaultRoles.SeedAsync(roleManager);
+                await DefaultIdentUser.SeedAsync(userManager);
                 //await DefaultIdentUser.SeedAsync(userManager);
             }
         }
