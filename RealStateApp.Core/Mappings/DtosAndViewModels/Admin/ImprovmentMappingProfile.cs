@@ -9,7 +9,7 @@ namespace RealStateApp.Core.Application.Mappings.DtosAndViewModels.Admin
         public ImprovmentMappingProfile()
         {
             CreateMap<ImprovementDto, ImprovmentReadVM>();
-            CreateMap<ImprovmentWritteVM, ImprovementDto>();
+            CreateMap<ImprovmentWritteVM, ImprovementDto>().ReverseMap();
         }
     }
 }

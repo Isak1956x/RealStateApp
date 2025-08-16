@@ -9,7 +9,7 @@ namespace RealStateApp.Core.Application.Mappings.DtosAndViewModels.Admin
         public PropertyTypeMappgingProfile()
         {
             CreateMap<PropertyTypeDto, PropertyTypeReadVM>();
-            CreateMap<PropertyTypeWriteVM, PropertyTypeDto>();
+            CreateMap<PropertyTypeWriteVM, PropertyTypeDto>().ReverseMap();
         }
     }
 }

@@ -14,7 +14,7 @@ namespace RealStateApp.Core.Application.Mappings.DtosAndViewModels.Admin
         public SalesTypeMappingProfile()
         {
             CreateMap<SaleTypeDto, SalesTypeReadVM>();
-            CreateMap<SalesTypeWritteVM, SaleTypeDto>();
+            CreateMap<SalesTypeWritteVM, SaleTypeDto>().ReverseMap();
         }
     }
 }
