@@ -5,10 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Domain.Settings;
 using RealStateApp.Infraestructure.Identity.Context;
 using RealStateApp.Infraestructure.Identity.Entities;
 using RealStateApp.Infraestructure.Identity.Seeds;
+using RealStateApp.Infraestructure.Identity.Services;
 using System.Text;
 
 namespace RealStateApp.Infraestructure.Identity
@@ -58,7 +60,7 @@ namespace RealStateApp.Infraestructure.Identity
                 opt.LoginPath = "/User";
                 opt.AccessDeniedPath = "/User";
             });
-            //services.AddScoped<IAccountServiceForWebApp, AccountServiceForWebApp>();
+            services.AddScoped<IAccountServiceForWebApp, AccountServiceForWebApp>();
 
             return services;
         }
@@ -168,6 +170,8 @@ namespace RealStateApp.Infraestructure.Identity
                 var roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
                 await DefaultRoles.SeedAsync(roleManager);
                 //await DefaultIdentUser.SeedAsync(userManager);
+                await DefaultAdminUser.SeedAsync(userManager);
+                await DefaultAdminUser.SeedAsync(userManager);
             }
         }
     }

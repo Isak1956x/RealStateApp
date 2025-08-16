@@ -1,5 +1,9 @@
 using RealState.Infraestructure.Persistence;
 using RealStateApp.Core.Application;
+using RealStateApp.Core.Application.Interfaces.Infraestructure.Shared;
+using RealStateApp.Infraestructure.Identity;
+using RealStateApp.Infraestructure.Shared;
+using RealStateApp.Presentation.WebApp.Handlers;
 
 namespace RealStateApp.Presentation.WebApp
 {
@@ -15,8 +19,10 @@ namespace RealStateApp.Presentation.WebApp
             builder.Services.AddIdentityServiceForWebApp(builder.Configuration);
             builder.Services.AddApplicationLayerIoc();
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddSharedLayerService(builder.Configuration);
 
             var app = builder.Build();
+             app.Services.RunIdentitySeedAsyn();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -40,4 +46,5 @@ namespace RealStateApp.Presentation.WebApp
             app.Run();
         }
     }
+       
 }

@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using RealStateApp.Core.Application.DTOs.Users;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Application.ViewModels.Login;
-using RealStateApp.Presentation.WebApp.Helpers;
+using RealStateApp.Core.Domain.Enums;
+using RealStateApp.Presentation.WebApp.Handlers;
 
 namespace RealStateApp.Presentation.WebApp.Controllers.Login
 {
@@ -20,6 +21,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
 
         public IActionResult Index()
         {
+            var accounts = _accountService.GetByRole(UserRoles.Agent);
             return View(new LoginVM());
         }
 
@@ -56,7 +58,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
             var result = await _accountService.RegisterAsync(_mapper.Map<RegisterRequestDTO>(registerVM), origin);
             if (result.IsSuccess)
             {
-                var path = FileManager.Upload(registerVM.PhotoPath, result.Value, "Users");
+                var path = FileHandler.Upload(registerVM.PhotoPath, result.Value, "Users");
                 await _accountService.UpdateProfilePhoto(result.Value,path);
                 return RedirectToAction("Index", "Login");
             }
