@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RealStateApp.Core.Application.DTOs.Users;
+using RealStateApp.Core.Application.Helpers.Enums;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Application.ViewModels.Login;
+using RealStateApp.Core.Domain.Enums;
 using RealStateApp.Presentation.WebApp.Helpers;
 
 namespace RealStateApp.Presentation.WebApp.Controllers.Login
@@ -18,8 +20,16 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
             _mapper = mapper;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string Error = null, string Message = null)
         {
+            if (!string.IsNullOrEmpty(Error))
+            {
+               ViewBag.Error = Error;
+            }
+            if (!string.IsNullOrEmpty(Message))
+            {
+                ViewBag.Message = Message;
+            }
             return View(new LoginVM());
         }
 
@@ -36,13 +46,13 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
                 // Handle successful login, e.g., redirect to a dashboard
                 return RedirectToAction("Index", "Home");
             }
-            ModelState.AddModelError(string.Empty, result.Error);
+            ViewBag.Error = result.Error;   
             return View(loginVM);
         }
 
         public IActionResult Register()
         {
-            return View(new RegisterVM());
+            return View(new RegisterVM() { Roles = EnumHelper.GetEnumsAsIdent<UserRoles>().Where(i => i.Id != 1 && i.Id != 4)}); 
         }
 
         [HttpPost]
@@ -58,7 +68,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
             {
                 var path = FileManager.Upload(registerVM.PhotoPath, result.Value, "Users");
                 await _accountService.UpdateProfilePhoto(result.Value,path);
-                return RedirectToAction("Index", "Login");
+                return RedirectToAction("Index", "Login", new { Message = "Please confirm your email."});
             }
             ModelState.AddModelError(string.Empty, result.Error);
             return View(registerVM);

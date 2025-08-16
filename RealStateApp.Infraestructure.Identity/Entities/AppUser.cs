@@ -9,7 +9,7 @@ namespace RealStateApp.Infraestructure.Identity.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string IdNumber { get; set; }
-        public string PhotoPath { get; set; }
-        public bool IsActive { get; set; }
+        public string? PhotoPath { get; set; }
+        public bool IsActive { get; set; } = true;
     }
 }

@@ -78,11 +78,13 @@ namespace RealStateApp.Infraestructure.Identity.Services
                 return Result<string>.Fail("Registration failed. Please try again.");
             }
             await _userManager.AddToRoleAsync(user, role.ToString());
-
-            var res = await SendEmailVerifaction(user, origin);
-            if (!res.IsSuccess)
+            if(role == UserRoles.Client)
             {
-                return Result<string>.Fail("Email verification failed.");
+                var res = await SendEmailVerifaction(user, origin);
+                if (!res.IsSuccess)
+                {
+                    return Result<string>.Fail("Email verification failed.");
+                }
             }
             /* Move to proper method implementation in webapp
             var emailVerificationUrl = await GetEmailVerificationUrl(user, origin);

@@ -84,7 +84,9 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
                 Title = "Delete Admin",
                 Value = id,
                 Message = $"Are you sure you want to delete the admin {user.Value.UserName}?",
-                AlertType = "warning"
+                AlertType = "warning",
+                Controller = "Developer",
+                ActionDestination = "Delete"
             };
             return View(Vm);
         }

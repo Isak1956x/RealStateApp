@@ -5,9 +5,7 @@ using RealStateApp.Core.Application.DTOs.Email;
 using RealStateApp.Core.Application.DTOs.Users;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Application.Interfaces.Infraestructure.Shared;
-using RealStateApp.Core.Application.Wrappers;
 using RealStateApp.Core.Domain.Base;
-using RealStateApp.Core.Domain.Enums;
 using RealStateApp.Infraestructure.Identity.Entities;
 using System.Text;
 
@@ -93,7 +91,7 @@ namespace RealStateApp.Infraestructure.Identity.Services
         {
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-            var route = "User/ConfirmEmail";
+            var route = "Login/ConfirmEmail";
             var completeUrl = new Uri($"{origin}/{route}");
             var verificationUrl = QueryHelpers.AddQueryString(completeUrl.ToString(), "userId", user.Id.ToString());
             verificationUrl = QueryHelpers.AddQueryString(verificationUrl, "token", token);
