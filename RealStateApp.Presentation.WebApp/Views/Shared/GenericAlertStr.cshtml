@@ -1,12 +1,11 @@
 ﻿@using RealStateApp.Core.Application.ViewModels.Base;
-@model GenericAlertVM<int>;
+@model GenericAlertVM<string>;
 @{
     ViewData["Title"] = "Confirmación";
     // Determina los colores basados en el alertType
     var cardHeaderClass = $"bg-{Model.AlertType} text-white";
     var confirmButtonClass = $"btn btn-outline-{Model.AlertType}";
     Layout = "_AdminLayout";
-    
 }
 
 <div class="row justify-content-center">

@@ -22,12 +22,17 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
         public async Task<IActionResult> Index()
         {
             IEnumerable<GenericUserReadVM> users = (await _accountService.GetDevs()).Select(u => _mapper.Map<GenericUserReadVM>(u));
-            return View(users);
+            return View("GenericUserRead", new UserGenericList
+            {
+                List = users,
+                Controller = "Developer",
+
+            });
         }
 
         public async Task<IActionResult> New()
         {
-            return View(new GenericUserWritteVM() { Role = (int)UserRoles.Admin });
+            return View("GenericUserWritte", new GenericUserWritteVM() { Role = (int)UserRoles.Developer, Controller = "Developer" });
         }
 
         [HttpPost]
@@ -35,16 +40,25 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
         {
             if (!ModelState.IsValid)
             {
-                return View(user);
+                return View("GenericUserWritte", user);
             }
-            var registerRequest = _mapper.Map<RegisterRequestDTO>(user);
-            var result = await _accountService.RegisterAsync(registerRequest, Request.Scheme + "://" + Request.Host);
+            var registerRequest = new RegisterRequestDTO
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                Password = user.Password,
+                RoleId = user.Role,
+                FirstName = user.FirstName,
+                IdCardNumber = user.IdCardNumber,
+                LastName = user.LastName
+            };
+            var result = await _accountService.RegisterByAdmin(registerRequest);
             if (result.IsSuccess)
             {
                 return RedirectToAction("Index");
             }
-            ModelState.AddModelError(string.Empty, result.Error);
-            return View(user);
+            ViewBag.Error = result.Error;
+            return View("GenericUserWritte", user);
         }
 
         public async Task<IActionResult> Update(string id)
@@ -54,16 +68,26 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
             {
                 return NotFound();
             }
-            var userVM = _mapper.Map<GenericUserWritteVM>(user.Value);
-            return View(userVM);
+            var userVM = new GenericUserWritteEditVM
+            {
+                Id = user.Value.Id,
+                UserName = user.Value.UserName,
+                Email = user.Value.Email,
+                IdCardNumber = user.Value.IdCardNumber,
+                FirstName = user.Value.FirstName,
+                LastName = user.Value.LastName,
+                IsCreating = false,
+                Controller = "Developer"
+            };
+            return View("GenericUserWritteEdit", userVM);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(GenericUserWritteVM user)
+        public async Task<IActionResult> Update(GenericUserWritteEditVM user)
         {
             if (!ModelState.IsValid)
             {
-                return View(user);
+                return View("GenericUserWritteEdit", user);
             }
             var userUpdateDTO = _mapper.Map<UserUpdateDTO>(user);
             var result = await _accountService.EditUser(userUpdateDTO);
@@ -72,35 +96,64 @@ namespace RealStateApp.Presentation.WebApp.Controllers.AdminControllers
                 return RedirectToAction("Index");
             }
             ModelState.AddModelError(string.Empty, result.Error);
-            return View(user);
+            return View("GenericUserWritteEdit", user);
         }
 
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Deactive(string id)
         {
             var user = await _accountService.GetUserByIdAsync(id);
 
             var Vm = new GenericAlertVM<string>
             {
-                Title = "Delete Admin",
+                Title = "Deactive Admin",
                 Value = id,
-                Message = $"Are you sure you want to delete the admin {user.Value.UserName}?",
+                Message = $"Are you sure you want to deactive the admin {user.Value.UserName}?",
                 AlertType = "warning",
                 Controller = "Developer",
-                ActionDestination = "Delete"
+                ActionDestination = "Deactive"
             };
-            return View(Vm);
+            return View("GenericAlertStr", Vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(GenericAlertVM<string> vm)
+        public async Task<IActionResult> Deactive(GenericAlertVM<string> vm)
         {
-            var result = await _accountService.DeleteUserAsyn(vm.Value);
+            var result = await _accountService.ChangueUserActive(vm.Value, false);
             if (result.IsSuccess)
             {
                 return RedirectToAction("Index");
             }
             ModelState.AddModelError(string.Empty, result.Error);
-            return View(vm);
+            return View("GenericAlertStr", vm);
+
+        }
+
+        public async Task<IActionResult> Active(string id)
+        {
+            var user = await _accountService.GetUserByIdAsync(id);
+
+            var Vm = new GenericAlertVM<string>
+            {
+                Title = "Active Admin",
+                Value = id,
+                Message = $"Are you sure you want to Active the admin {user.Value.UserName}?",
+                AlertType = "primary",
+                Controller = "Admins",
+                ActionDestination = "Active"
+            };
+            return View("GenericAlertStr", Vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Active(GenericAlertVM<string> vm)
+        {
+            var result = await _accountService.ChangueUserActive(vm.Value, true);
+            if (result.IsSuccess)
+            {
+                return RedirectToAction("Index");
+            }
+            ModelState.AddModelError(string.Empty, result.Error);
+            return View("GenericAlertStr", vm);
 
         }
     }

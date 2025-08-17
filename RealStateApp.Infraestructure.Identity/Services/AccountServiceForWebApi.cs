@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RealStateApp.Core.Application.DTOs.Users;
 using RealStateApp.Core.Application.Interfaces.Infraestructure.Shared;
+using RealStateApp.Core.Application.Services;
 using RealStateApp.Core.Domain.Base;
 using RealStateApp.Core.Domain.Settings;
 using RealStateApp.Infraestructure.Identity.Entities;
@@ -19,7 +20,8 @@ namespace RealStateApp.Infraestructure.Identity.Services
         private readonly JwtSettings _jwtSettings;
 
         public AccountServiceForWebApi(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            IEmailService emailService, IOptions<JwtSettings> jwtSetting, IMapper mapper) : base(userManager, signInManager, emailService, mapper)
+            IEmailService emailService, IOptions<JwtSettings> jwtSetting, IMapper mapper, IPropertyService propertyService) 
+            : base(userManager, signInManager, emailService, mapper, propertyService)
         {
             _jwtSettings = jwtSetting.Value;
         }

@@ -1,4 +1,5 @@
-﻿namespace RealStateApp.Core.Application.Interfaces
+﻿
+namespace RealStateApp.Core.Application.Interfaces
 {
     public interface IGenericService<DtoModel> where DtoModel : class
     {

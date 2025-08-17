@@ -7,8 +7,10 @@ using RealStateApp.Core.Application.DTOs.Users;
 using RealStateApp.Core.Application.Helpers.Enums;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Application.Interfaces.Infraestructure.Shared;
+using RealStateApp.Core.Application.Services;
 using RealStateApp.Core.Domain.Base;
 using RealStateApp.Core.Domain.Enums;
+using RealStateApp.Core.Domain.Interfaces;
 using RealStateApp.Infraestructure.Identity.Entities;
 using System.Text;
 
@@ -20,14 +22,17 @@ namespace RealStateApp.Infraestructure.Identity.Services
         protected readonly IMapper _mapper;
         protected readonly SignInManager<AppUser> _signInManager;
         protected readonly IEmailService _emailService;
+        private readonly IPropertyService _propertyService;
 
 
-        protected BaseAccountService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService, IMapper mapper)
+        protected BaseAccountService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService
+            , IMapper mapper, IPropertyService propertyService)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             _emailService = emailService;
             _mapper = mapper;
+            _propertyService = propertyService;
         }
 
         public async Task<Result<UserDto>> GetUserByIdAsync(string id)
@@ -38,7 +43,16 @@ namespace RealStateApp.Infraestructure.Identity.Services
                 return Result<UserDto>.Fail("User not found.");
             }
             var roles = await _userManager.GetRolesAsync(user);
-            var userDto = _mapper.Map<UserDto>(user);
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                IdCardNumber = user.IdNumber,
+                IsActive = user.IsActive
+            };
             userDto.Role = roles.FirstOrDefault();
             return userDto;
         }
@@ -68,7 +82,7 @@ namespace RealStateApp.Infraestructure.Identity.Services
                 FirstName = registerRequest.FirstName,
                 LastName = registerRequest.LastName,
                 PhotoPath = registerRequest.PhotoPath,
-                IdNumber = registerRequest.IdNumber,
+                IdNumber = registerRequest.IdCardNumber,
                 PhoneNumberConfirmed = true,
                 EmailConfirmed = false
             };
@@ -124,7 +138,7 @@ namespace RealStateApp.Infraestructure.Identity.Services
                 LastName = registerRequest.LastName,
                 PhotoPath = registerRequest.PhotoPath,
                 //Role = (UserRole)registerRequest.RoleId,
-                IdNumber = registerRequest.IdNumber,
+                IdNumber = registerRequest.IdCardNumber,
                 PhoneNumberConfirmed = true,
                 EmailConfirmed = true
             };
@@ -134,8 +148,36 @@ namespace RealStateApp.Infraestructure.Identity.Services
                 return Result<UserDto>.Fail("Registration failed. Please try again.");
             }
             await _userManager.AddToRoleAsync(user, role.ToString());
-            return _mapper.Map<UserDto>(user);
+            return new UserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                IdCardNumber = user.IdNumber,
+                IsActive = user.IsActive,
+                Role = role.ToString()
+            };
 
+        }
+
+
+        public async Task<IEnumerable<UserDto>> GetAgents()
+        {
+            var agents = await GetByRole(UserRoles.Agent);
+            var propCounts = await _propertyService.GetPropertyCountOfAgents(agents.Select(a => a.Id));
+            return agents.Select(user => new UserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                IdCardNumber = user.IdCardNumber,
+                IsActive = user.IsActive,
+                LinkedProperties = propCounts[user.Id]
+            });
         }
 
         public async Task<Result<Unit>> ConfirmEmailAsync(string userId, string token)
@@ -163,7 +205,11 @@ namespace RealStateApp.Infraestructure.Identity.Services
             }
             user.FirstName = dto.FirstName;
             user.LastName = dto.LastName;
-            user.PhotoPath = dto.PhotoPath;
+            //user.PhotoPath = dto.PhotoPath;
+            user.IdNumber = dto.IdCardNumber;
+            user.UserName = dto.UserName;
+            user.Email = dto.Email;
+
             //user.PhotoPath = string.IsNullOrEmpty(dto.PhotoPath) ? user.PhotoPath : dto.PhotoPath;
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
@@ -218,6 +264,70 @@ namespace RealStateApp.Infraestructure.Identity.Services
             }
             return Unit.Value;
         }
+
+        public async Task<AdminDashboardDto> GetDashboardResume()
+        {
+            var resOfProps = await _propertyService.GetResume();
+            var agents = await GetByRole(UserRoles.Agent);
+            var clients = await GetByRole(UserRoles.Client);
+            var devs = await GetByRole(UserRoles.Developer);
+
+            return new AdminDashboardDto
+            {
+                ActiveAgents = agents.Where(u => u.IsActive).Count(),
+                ActiveClients = clients.Where(u => u.IsActive).Count(),
+                ActiveDevelopers = devs.Where(u => u.IsActive).Count(),
+                InactiveAgents = agents.Where(u => !u.IsActive).Count(),
+                InactiveClients = clients.Where(u => !u.IsActive).Count(),
+                InactiveDevelopers = devs.Where(u => !u.IsActive).Count(),
+                AvailableProperties = resOfProps.AvailableProperties,
+                SoldProperties = resOfProps.SoldProperties
+            };
+
+        }
+
+        public async Task<Result<Unit>> DeleteAgentAsyn(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return Result<Unit>.Fail("User not found.");
+            }
+            var res = await _propertyService.DeletePropertiesOfAgent(id);
+            if (!res.IsSuccess)
+            {
+                return Result<Unit>.Fail("Failed to delete agent's properties.");
+            }
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                return Result<Unit>.Fail("User deletion failed.");
+            }
+
+            else
+            {
+                return Result<Unit>.Fail("Domain user deletion failed.");
+            }
+            return Unit.Value;
+        }
+
+        public async Task<Result<Unit>> ChangueUserActive(string id, bool isActive)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return Result<Unit>.Fail("User not found.");
+            }
+            user.IsActive = isActive;
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return Result<Unit>.Fail("User activation status change failed.");
+            }
+            return Unit.Value;
+        }
+
+
         public async Task<IEnumerable<UserDto>> GetByRole(UserRoles role)
         {
             var users = await _userManager.GetUsersInRoleAsync(role.ToString());

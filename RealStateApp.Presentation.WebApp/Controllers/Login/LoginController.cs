@@ -71,7 +71,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
             string origin = Request.Headers["origin"].ToString();
             var dTO = new RegisterRequestDTO
             {
-                IdNumber = registerVM.IdNumber,
+                IdCardNumber = registerVM.IdNumber,
                 Email = registerVM.Email,
                 FirstName = registerVM.FirstName,
                 LastName = registerVM.LastName,

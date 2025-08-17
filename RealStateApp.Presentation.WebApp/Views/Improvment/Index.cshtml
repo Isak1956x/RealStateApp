@@ -4,7 +4,8 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Property Types";
+    ViewData["Title"] = "Improvements";
+    Layout = "_AdminLayout";
 }
 
 <div class="container mt-4">
@@ -20,7 +21,7 @@
         <div class="card-body">
             @if (!Model.Any())
             {
-                <div class="alert alert-info text-center mb-0">There's no property types registered'</div>
+                <div class="alert alert-info text-center mb-0">There's no improvements registered'</div>
             }
             else
             {

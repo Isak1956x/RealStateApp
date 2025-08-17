@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore.Metadata;
 using RealStateApp.Core.Application.DTOs.Email;
 using RealStateApp.Core.Application.DTOs.Users;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Application.Interfaces.Infraestructure.Shared;
+using RealStateApp.Core.Application.Services;
 using RealStateApp.Core.Domain.Base;
 using RealStateApp.Infraestructure.Identity.Entities;
 using System.Text;
@@ -13,8 +15,8 @@ namespace RealStateApp.Infraestructure.Identity.Services
 {
     public class AccountServiceForWebApp : BaseAccountService, IAccountServiceForWebApp
     {
-        public AccountServiceForWebApp(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService, IMapper mapper) 
-            : base(userManager, signInManager, emailService, mapper)
+        public AccountServiceForWebApp(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService, IMapper mapper, IPropertyService propertyService) 
+            : base(userManager, signInManager, emailService,mapper, propertyService)
         {
         }
 
