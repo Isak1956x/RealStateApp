@@ -8,20 +8,11 @@
 
   <ItemGroup>
     <Folder Include="Behaviors\" />
-    <Folder Include="Features\Agents\Commands\" />
-    <Folder Include="Features\Agents\Queries\" />
     <Folder Include="Features\Agents\Validations\" />
-    <Folder Include="Features\Improvements\Commands\" />
-    <Folder Include="Features\Improvements\Queries\" />
     <Folder Include="Features\Improvements\Validations\" />
     <Folder Include="Features\Properties\Commands\" />
     <Folder Include="Features\Properties\Validations\" />
-    <Folder Include="Features\Properties\Queries\" />
-    <Folder Include="Features\PropertyTypes\Commands\" />
-    <Folder Include="Features\PropertyTypes\Queries\" />
     <Folder Include="Features\PropertyTypes\Validations\" />
-    <Folder Include="Features\SaleTypes\Commands\" />
-    <Folder Include="Features\SaleTypes\Queries\" />
     <Folder Include="Features\SaleTypes\Validations\" />
     <Folder Include="Interfaces\Infraestructure\Persistence\" />
     <Folder Include="Interfaces\Services\" />

@@ -11,5 +11,7 @@ namespace RealStateApp.Core.Domain.Interfaces
     public interface IPropertyRepository : IRepositoryBase<Property, int>
     {
         Task<Result<Unit>> DeletePropertiesOfAgent(string agentId);
+        Task<Property> GetByCode(string code);
+        Task<IEnumerable<Property>> GetPropertiesByAgentId(string agentId);
     }
 }
