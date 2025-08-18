@@ -101,12 +101,15 @@
                     style="width: 70px; height: 70px; object-fit: cover;">
                     <div>
                         <p class="mb-1 fw-semibold">@Model.Agent.FirstName @Model.Agent.LastName</p>
-                        <p class="mb-0 text-muted"><i class="bi bi-telephone"></i> @Model.Agent.Email</p>
                         <p class="mb-0 text-muted"><i class="bi bi-whatsapp"></i> @Model.Agent.PhoneNumber</p>
-                        <p class="mb-0 text-muted"><i class="bi bi-envelope"></i> tunene</p>
+                        <p class="mb-0 text-muted"><i class="bi bi-envelope"></i> @Model.Agent.Email</p>
                     </div>
                 </div>
-                <button class="btn btn-primary w-100"><i class="bi bi-person-lines-fill"></i> Solicitar Asesoría</button>
+                <a class="btn btn-success w-100"
+                   href="https://wa.me/@Model.Agent.PhoneNumber?text=Hola, estoy interesado en una propiedad que vi en la página."
+                   target="_blank">
+                    <i class="bi bi-whatsapp"></i> Solicitar Asesoría
+                </a>
             </div>
             @if (Model.Addons)
             {

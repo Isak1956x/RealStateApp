@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RealStateApp.Core.Application.DTOs.Users;
@@ -30,8 +31,10 @@ namespace RealStateApp.Presentation.WebApp.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(string? agentName, bool isClient = false)
+        public async Task<IActionResult> Index(string? agentName)
         {
+            AppUser? userSession = await _userManager.GetUserAsync(User);
+            var user = await _accountService.GetUserByIdAsync(userSession!.Id);
             var agents = await _accountService.GetByRole(UserRoles.Agent);
             var agentsVm = _mapper.Map<List<UserViewModel>>(agents).OrderBy(a => a.FirstName).ThenBy(a => a.LastName).Where(a => a.IsActive).ToList();
             if (agentName != null)
@@ -41,11 +44,11 @@ namespace RealStateApp.Presentation.WebApp.Controllers
                     .Where(a => a.FirstName.ToUpper().Contains(agentNameUpper) || a.LastName.ToUpper().Contains(agentNameUpper))
                     .ToList();
             }
-            ViewBag.IsClient = isClient;
+            ViewBag.IsClient = user.Value.Role == "Client";
 
             return View(agentsVm);
         }
-
+        [Authorize(Roles = "Agent")]
         [HttpPost]
         public async Task<IActionResult> UpdateAgent(UpdateUserViewModel userVm)
         {
