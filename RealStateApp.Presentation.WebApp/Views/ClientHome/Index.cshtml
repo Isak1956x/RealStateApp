@@ -4,13 +4,19 @@
     ViewData["Title"] = "Home Page";
     Layout = "_ClientLayout";
 }
-<form method="get" asp-action="Index" class="mb-4" style="max-width: 350px;">
-    <div class="input-group">
+<!-- Mensaje de bienvenida -->
+<div class="text-center mb-4">
+    <h2 class="fw-bold">Bienvenido, @ViewBag.ClientName 👋</h2>
+    <p class="text-muted">Explora las propiedades disponibles y encuentra la ideal para ti.</p>
+</div>
+<form method="get" asp-action="Index" class="mb-4 mx-auto" style="max-width: 500px;">
+    <div class="input-group shadow-sm">
         <span class="input-group-text"><i class="bi bi-search"></i></span>
-        <input type="text" asp-for="Code" class="form-control" placeholder="Buscar propiedad por código"  />
+        <input type="text" asp-for="Code" class="form-control" placeholder="Buscar propiedad por código" />
         <button class="btn btn-primary" type="submit">Buscar</button>
     </div>
 </form>
+
 
 
 <!-- Filtros -->
@@ -58,7 +64,7 @@
         {
 
             <div class="col-md-4">
-                <a asp-controller="Property" asp-action="Details" asp-route-Id="@(propiedad.Id)" style="text-decoration: none; color: inherit;">
+                <a asp-controller="Property" asp-action="Details" asp-route-Id="@(propiedad.Id)" asp-route-Addons="@(true)"  style="text-decoration: none; color: inherit;">
                     <div class="card shadow-sm h-100 position-relative ">
                         @{bool isFavorite = Model.FavPropertiesIds!.Contains(propiedad.Id); }
                         <!-- Botón de favoritos -->

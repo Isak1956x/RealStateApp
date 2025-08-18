@@ -58,7 +58,7 @@ namespace RealStateApp.Infraestructure.Identity
                 opt.ExpireTimeSpan = TimeSpan.FromHours(4);
                 opt.SlidingExpiration = true;
                 opt.LoginPath = "/User";
-                opt.AccessDeniedPath = "/User";
+                opt.AccessDeniedPath = "/Login/AccessDenied";
             });
             services.AddScoped<IAccountServiceForWebApp, AccountServiceForWebApp>();
 
@@ -171,7 +171,8 @@ namespace RealStateApp.Infraestructure.Identity
                 await DefaultRoles.SeedAsync(roleManager);
                 //await DefaultIdentUser.SeedAsync(userManager);
                 await DefaultAdminUser.SeedAsync(userManager);
-                await DefaultAdminUser.SeedAsync(userManager);
+                await DefaultAgentUser.SeedAsync(userManager);
+                await DefaultClientUser.SeedAsync(userManager);
             }
         }
     }

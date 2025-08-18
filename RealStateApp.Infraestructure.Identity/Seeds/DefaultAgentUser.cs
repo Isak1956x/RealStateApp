@@ -17,7 +17,10 @@ namespace RealStateApp.Infraestructure.Identity.Seeds
                 Email = "agent@email.com",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
-                UserName = "agent"
+                UserName = "agent",
+                IdNumber = "1234",
+                PhotoPath = "https://www.realestate.com.au/news-image/w_1280,h_720/v1681361659/stock-assets/editorial-use-only/joshtesolin.jpg?_i=AA",
+                IsActive = true
             };
 
             if (await userManager.Users.AllAsync(u => u.Id != user.Id))

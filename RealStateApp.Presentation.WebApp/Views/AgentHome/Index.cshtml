@@ -4,8 +4,14 @@
     ViewData["Title"] = "Home Page";
 	Layout = "_AgentLayout";
 }
-<form method="get" asp-action="Index" class="mb-4" style="max-width: 350px;">
-    <div class="input-group">
+<!-- Mensaje de bienvenida -->
+<div class="text-center mb-4">
+    <h2 class="fw-bold">Bienvenido, @ViewBag.AgentName 👋</h2>
+    <p class="text-muted">Gestiona tus inmuebles y conecta con potenciales clientes.</p>
+
+</div>
+<form method="get" asp-action="Index" class="mb-4 mx-auto" style="max-width: 500px;">
+    <div class="input-group shadow-sm">
         <span class="input-group-text"><i class="bi bi-search"></i></span>
         <input type="text" asp-for="Code" class="form-control" placeholder="Buscar propiedad por código" />
         <button class="btn btn-primary" type="submit">Buscar</button>
@@ -58,7 +64,7 @@
         {
 
             <div class="col-md-4">
-                <a asp-controller="Property" asp-action="Details" asp-route-Id="@(propiedad.Id)" asp-route-isAgent="@(true)" style="text-decoration: none; color: inherit;">
+                <a asp-controller="Property" asp-action="Details" asp-route-Id="@(propiedad.Id)" asp-route-Addons="@(true)" style="text-decoration: none; color: inherit;">
                     <div class="card shadow-sm h-100 position-relative ">
 
                         <img src="@(propiedad.Images != null ? propiedad.Images!.FirstOrDefault()!.Url : "https://thumb.ac-illust.com/b1/b170870007dfa419295d949814474ab2_t.jpeg")"

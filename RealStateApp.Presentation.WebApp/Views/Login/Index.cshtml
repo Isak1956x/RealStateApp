@@ -5,6 +5,7 @@
 *@
 @{
     ViewData["Title"] = "Login";
+    Layout = "_GeneralLayout";
 }
 
 <div class="container mt-5">
@@ -15,7 +16,7 @@
                     <h4>@ViewData["Title"]</h4>
                 </div>
                 <div class="card-body">
-                    <form asp-action="Login" method="post">
+                    <form asp-action="Index" method="post">
                         <div class="form-group mb-3">
                             <label asp-for="Email" class="form-label"></label>
                             <input asp-for="Email" class="form-control" />

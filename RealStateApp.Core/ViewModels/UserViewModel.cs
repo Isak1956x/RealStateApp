@@ -1,6 +1,6 @@
-﻿namespace RealStateApp.Core.Application.DTOs.Users
+﻿namespace RealStateApp.Core.Application.ViewModels
 {
-    public class UserDto
+    public class UserViewModel
     {
         public string Id { get; set; }
         public string UserName { get; set; }
@@ -12,5 +12,6 @@
         public string Role { get; set; } // Assuming Role is a string, adjust as necessary,
         public string PhotoPath { get; set; }
         public string PhoneNumber { get; set; }
+
     }
 }

@@ -7,9 +7,11 @@ using RealStateApp.Core.Application.DTOs.Users;
 using RealStateApp.Core.Application.Helpers.Enums;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Application.Interfaces.Infraestructure.Shared;
+using RealStateApp.Core.Application.ViewModels;
 using RealStateApp.Core.Domain.Base;
 using RealStateApp.Core.Domain.Enums;
 using RealStateApp.Infraestructure.Identity.Entities;
+using System.Data;
 using System.Text;
 
 namespace RealStateApp.Infraestructure.Identity.Services
@@ -38,8 +40,19 @@ namespace RealStateApp.Infraestructure.Identity.Services
                 return Result<UserDto>.Fail("User not found.");
             }
             var roles = await _userManager.GetRolesAsync(user);
-            var userDto = _mapper.Map<UserDto>(user);
-            userDto.Role = roles.FirstOrDefault();
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                IdCardNumber = user.IdNumber,
+                IsActive = user.IsActive,
+                PhotoPath = user.PhotoPath,
+                PhoneNumber = user.PhoneNumber
+            };
+             userDto.Role = roles.FirstOrDefault();
             return userDto;
         }
 
@@ -68,7 +81,7 @@ namespace RealStateApp.Infraestructure.Identity.Services
                 FirstName = registerRequest.FirstName,
                 LastName = registerRequest.LastName,
                 PhotoPath = registerRequest.PhotoPath,
-                IdNumber = registerRequest.IdNumber,
+                IdNumber = registerRequest.IdNumber ?? "",
                 PhoneNumberConfirmed = true,
                 EmailConfirmed = false
             };
@@ -161,7 +174,8 @@ namespace RealStateApp.Infraestructure.Identity.Services
             }
             user.FirstName = dto.FirstName;
             user.LastName = dto.LastName;
-            user.PhotoPath = dto.PhotoPath;
+            user.PhotoPath = dto.PhotoPath ?? user.PhotoPath;
+            user.PhoneNumber = dto.PhoneNumber;
             //user.PhotoPath = string.IsNullOrEmpty(dto.PhotoPath) ? user.PhotoPath : dto.PhotoPath;
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
@@ -228,7 +242,9 @@ namespace RealStateApp.Infraestructure.Identity.Services
                 LastName = user.LastName,
                 IdCardNumber = user.IdNumber,
                 IsActive = user.IsActive,
-                Role = role.ToString()
+                Role = role.ToString(),
+                PhotoPath = user.PhotoPath
+
             });
 
         }

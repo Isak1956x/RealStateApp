@@ -2,15 +2,23 @@
 @model List<PropertyViewModel>
 @{
     ViewData["Title"] = "Home Page";
-    Layout = ViewBag.isClient ? "_ClientLayout" : "_GeneralLayout";
+    Layout = "_AgentLayout";
 }
-<div class="container py-4">
-    <!-- Título del agente -->
-    <h2 class="mb-4">Propiedades de @ViewBag.agentName</h2>
 
-    <!-- Grilla de propiedades -->
+<div class="container py-4">
+    <!-- Encabezado -->
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <h2 class="fw-bold text-primary mb-0">
+                <i class="bi bi-building me-2"></i> Mantenimiento de Propiedades
+            </h2>
+            <a asp-action="Create" class="btn btn-success btn-lg rounded-circle shadow" title="Crear nueva propiedad">
+                <i class="bi bi-plus-lg"></i>
+            </a>
+        </div>
+    </div>
+
     <div class="row g-4">
-       <div class="row g-4">
         @if (Model != null && Model.Any())
         {
             foreach (var propiedad in Model)
@@ -47,18 +55,25 @@
                                     <i class="bi bi-bucket me-2"></i> @propiedad.Bathrooms Baños
                                 </p>
 
-                            
+                       
+                                <div class="mt-auto d-flex justify-content-end gap-2">
+                                    <a asp-action="Edit" asp-route-id="@propiedad.Id" class="btn btn-outline-warning btn-sm rounded-pill px-3" title="Editar">
+                                        <i class="bi bi-pencil-square me-1"></i> Editar
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@propiedad.Id" class="btn btn-outline-danger btn-sm rounded-pill px-3" title="Eliminar">
+                                        <i class="bi bi-trash me-1"></i> Eliminar
+                                    </a>
+                                </div>
                             </div>
                         </a>
                     </div>
                 </div>
             }
-         }
+        }
         else
         {
-            <div class="col-12 d-flex flex-column justify-content-center align-items-center py-5">
-                <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="No hay propiedades" style="width:100px; margin-bottom:20px;" />
-                <h4 class="text-muted text-center">Este agente no tiene ninguna propiedad registrada.</h4>
+            <div class="col-12">
+                <div class="alert alert-info text-center shadow-sm">No hay propiedades disponibles.</div>
             </div>
         }
     </div>
