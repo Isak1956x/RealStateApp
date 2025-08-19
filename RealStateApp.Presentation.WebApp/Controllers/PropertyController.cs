@@ -81,17 +81,9 @@ namespace RealStateApp.Presentation.WebApp.Controllers
                 Bathrooms = 0,
                 IsAvailable = true,
                 PropertyTypeId = 0,
-                PropertyTypes = propertTypes.Select(pt => new PropertyTypeViewModel
-                {
-                    Id = pt.Id,
-                    Name = pt.Name
-                }).ToList(),
+                PropertyTypes = _mapper.Map<List<PropertyTypeViewModel>>(propertTypes),
                 Improvements = _mapper.Map<List<ImprovementViewModel>>(improvements),
-                SaleTypes = saleTypes.Select(st => new SaleTypeViewModel
-                {
-                    Id = st.Id,
-                    Name = st.Name
-                }).ToList(),
+                SaleTypes = _mapper.Map<List<SaleTypeViewModel>>(saleTypes),
                 SaleTypeId = 0,
                 AgentId = userSession!.Id,
                 Description = "",
@@ -128,7 +120,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers
             }
             if(!vm.ImprovementIds.Any())
             {
-                ModelState.AddModelError("ImprovementIds", "Improvement is alo");
+                ModelState.AddModelError("ImprovementIds", "Improvement is required");
                 var saleTypes = await _saleTypeService.GetAll();
                 var improvements = await _improvementService.GetAll();
                 var propertTypes = await _propertyTypeService.GetAll();
@@ -202,20 +194,13 @@ namespace RealStateApp.Presentation.WebApp.Controllers
                     Id = pt.Id,
                     Name = pt.Name
                 }).ToList(),
-                Improvements = improvements.Select(i => new ImprovementViewModel
-                {
-                    Id = i.Id,
-                    Name = i.Name
-                }).ToList(),
-                SaleTypes = saleTypes.Select(st => new SaleTypeViewModel
-                {
-                    Id = st.Id,
-                    Name = st.Name
-                }).ToList(),
+                Improvements = _mapper.Map<List<ImprovementViewModel>>(improvements),
+                SaleTypes = _mapper.Map<List<SaleTypeViewModel>>(saleTypes),
                 SaleTypeId = property.SaleTypeId,
                 AgentId = property.AgentId,
                 Description = property.Description!,
-                Property = _mapper.Map<PropertyViewModel>(property)
+                Property = _mapper.Map<PropertyViewModel>(property),
+                ImprovementIds = property.PropertyImprovements?.Select(pi => pi.ImprovementId).ToList() ?? new List<int>(),
             };
             ViewBag.EditMode = true;
             return View("Create", propertyViewModel);
@@ -258,9 +243,30 @@ namespace RealStateApp.Presentation.WebApp.Controllers
                         };
                         await _propertyImageService.AddAsync(imageDto);
                     }
+                    
+                }
+                if (vm.ImprovementIds != null && vm.ImprovementIds.Any())
+                {
+               
+                    var existing = (await _propertyImprovementService.GetAll()).Where(p => p.PropertyId == property.Id).ToList();
+
+                  
+                    var toAdd = vm.ImprovementIds
+                                  .Where(id => !existing.Any(e => e.ImprovementId == id))
+                                  .ToList();
+
+                    foreach (var improvementId in toAdd)
+                    {
+                        var dto = new PropertyImprovementDto
+                        {
+                            PropertyId = result.Id,
+                            ImprovementId = improvementId
+                        };
+                        await _propertyImprovementService.AddAsync(dto);
+                    }
                 }
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("PropertiesMaintenance");
         }
         [Authorize(Roles = "Agent")]
         public IActionResult Delete(int Id)
@@ -280,7 +286,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers
             await _propertyService.DeleteAsync(vm.Id);
                 
           
-            return RedirectToAction("Index");
+            return RedirectToAction("PropertiesMaintenance");
         }
         public async Task< IActionResult> Details(int Id)
         {

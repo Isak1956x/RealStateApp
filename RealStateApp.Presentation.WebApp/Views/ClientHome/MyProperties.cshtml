@@ -15,7 +15,7 @@
     </div>
 
     <!-- Barra de búsqueda -->
-    <form method="get" asp-action="Index" class="mb-4 mx-auto" style="max-width: 500px;">
+    <form method="get" asp-action="MyProperties" class="mb-4 mx-auto" style="max-width: 500px;">
         <div class="input-group shadow-sm">
             <span class="input-group-text"><i class="bi bi-search"></i></span>
             <input type="text" asp-for="Code" class="form-control" placeholder="Buscar propiedad por código" />
@@ -24,7 +24,7 @@
     </form>
 
     <!-- Filtros -->
-    <form method="get" asp-action="Index" class="row g-3 mb-5">
+    <form method="get" asp-action="MyProperties" class="row g-3 mb-5">
         <div class="col-md-3">
             <label class="form-label">Tipo de propiedad</label>
             <select asp-for="PropertyTypeId" class="form-select">
@@ -38,22 +38,22 @@
 
         <div class="col-md-2">
             <label class="form-label">Precio mínimo</label>
-            <input type="number" asp-for="MinPrice" class="form-control" placeholder="RD$">
+            <input type="number" asp-for="MinPrice" class="form-control" placeholder="RD$" min="1">
         </div>
 
         <div class="col-md-2">
             <label class="form-label">Precio máximo</label>
-            <input type="number" asp-for="MaxPrice" class="form-control" placeholder="RD$">
+            <input type="number" asp-for="MaxPrice" class="form-control" placeholder="RD$" min="1">
         </div>
 
         <div class="col-md-2">
             <label class="form-label">Habitaciones</label>
-            <input type="number" asp-for="Bedrooms" class="form-control" min="0">
+            <input type="number" asp-for="Bedrooms" class="form-control" min="1">
         </div>
 
         <div class="col-md-2">
             <label class="form-label">Baños</label>
-            <input type="number" asp-for="Bathrooms" class="form-control" min="0">
+            <input type="number" asp-for="Bathrooms" class="form-control" min="1">
         </div>
 
         <div class="col-md-1 d-flex align-items-end">

@@ -34,22 +34,22 @@
 
     <div class="col-md-2">
         <label class="form-label">Precio mínimo</label>
-        <input type="number" asp-for="MinPrice" class="form-control" placeholder="RD$">
+        <input type="number" asp-for="MinPrice" class="form-control" placeholder="RD$" min="1">
     </div>
 
     <div class="col-md-2">
         <label class="form-label">Precio máximo</label>
-        <input type="number" asp-for="MaxPrice" class="form-control" placeholder="RD$">
+        <input type="number" asp-for="MaxPrice" class="form-control" placeholder="RD$" min="1">
     </div>
 
     <div class="col-md-2">
         <label class="form-label">Habitaciones</label>
-        <input type="number" asp-for="Bedrooms" class="form-control" min="0">
+        <input type="number" asp-for="Bedrooms" class="form-control" min="1">
     </div>
 
     <div class="col-md-2">
         <label class="form-label">Baños</label>
-        <input type="number" asp-for="Bathrooms" class="form-control" min="0">
+        <input type="number" asp-for="Bathrooms" class="form-control" min="1">
     </div>
 
     <div class="col-md-1 d-flex align-items-end">

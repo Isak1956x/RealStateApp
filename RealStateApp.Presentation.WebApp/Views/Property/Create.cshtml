@@ -4,10 +4,32 @@
 
     Layout = "_AgentLayout";
     bool EditMode = ViewBag.EditMode ?? false;
+    bool notCreate = Model.PropertyTypes == null || !Model.PropertyTypes.Any()
+                 || Model.Improvements == null || !Model.Improvements.Any()
+                  || Model.SaleTypes == null || !Model.SaleTypes.Any();
     ViewData["Title"] = EditMode ? "Editar Propiedad" : "Crear Propiedad";
 }
 
 <div class="col-12 col-md-8 offset-md-2">
+    @if (notCreate)
+    {
+        <div class="col-12">
+            <div class="alert alert-danger">
+                <strong>No se puede @(EditMode ? "editar" : "crear") la propiedad.</strong><br />
+                Faltan los siguientes datos obligatorios:
+                <ul class="mb-0 mt-2">
+                    @if (Model.PropertyTypes == null || !Model.PropertyTypes.Any())
+                    {
+                        <li><i class="bi bi-exclamation-circle text-danger"></i> No hay <b>Tipos de Propiedad</b> registrados.</li>
+                    }
+                    @if (Model.Improvements == null || !Model.Improvements.Any())
+                    {
+                        <li><i class="bi bi-exclamation-circle text-danger"></i> No hay <b>Mejoras</b> registradas.</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
     <div class="card shadow-lg">
         <div class="card-header bg-success text-light text-center">
             <h5 class="mb-0">@(EditMode ? "Editar Propiedad" : "Crear Nueva Propiedad")</h5>
@@ -102,7 +124,7 @@
                                        name="ImprovementIds"
                                        value="@improvement.Id"
                                        class="form-check-input"
-                                @(Model.ImprovementIds.Contains(improvement.Id) ? "checked" : "") />
+                                @(Model.ImprovementIds.Contains(improvement.Id) ? "checked disabled" : "") />
                                 <label class="form-check-label">@improvement.Name</label>
                             </div>
                         }
@@ -157,10 +179,16 @@
                 <input asp-for="PropertyTypes" hidden>
                 <input asp-for="Improvements" hidden>
                 <input asp-for="SaleTypes" hidden>
-          
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-success">@(EditMode ? "Editar Propiedad" : "Guardar Propiedaf")</button>
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-success px-4" @(notCreate ? "disabled" : "")>
+                        @(EditMode ? "Editar Propiedad" : "Guardar Propiedad")
+                    </button>
+
+                    <a asp-action="PropertiesMaintenance" class="btn btn-secondary px-4">
+                        Volver Atrás
+                    </a>
                 </div>
+            
             </form>
         </div>
     </div>

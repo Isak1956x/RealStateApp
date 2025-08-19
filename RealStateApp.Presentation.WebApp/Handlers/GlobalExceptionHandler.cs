@@ -15,7 +15,7 @@ namespace RealStateApp.Presentation.WebApp.Handlers
             switch (exception)
             {
                 case ApiException apiException:
-                    //custom exception handling
+                  
                     switch (apiException.StatusCode)
                     {
                         case (int)HttpStatusCode.BadRequest:
@@ -38,7 +38,7 @@ namespace RealStateApp.Presentation.WebApp.Handlers
                     exceptionTitle = "Not found";
                     httpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
                     break;
-                case ArgumentException or ValidationException://only available in .NET 9+
+                case ArgumentException or ValidationException:
                     exceptionTitle = "Bad Request";
                     httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;

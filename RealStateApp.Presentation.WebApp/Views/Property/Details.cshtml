@@ -65,7 +65,7 @@
                         <span class="badge bg-warning text-dark"><i class="bi bi-tags"></i> @Model.Property.SaleType.Name</span>
                     </div>
 
-                    <h3 class="text-success fw-bold">RD$ @Model.Property.Price.ToString("N0")</h3>
+                    <h3 class="text-success fw-bold">DOP$ @Model.Property.Price.ToString("N0")</h3>
 
                     <div class="d-flex gap-4 my-3 text-muted">
                         <span><i class="bi bi-door-closed"></i> @Model.Property.Bedrooms @(Model.Property.Bedrooms > 1 ? "Habitaciones" : "Habitación")</span>
@@ -83,7 +83,7 @@
                             {
                                 <li class="d-inline-block me-3">
                                     <i class="bi bi-check-circle-fill text-success me-1"></i>
-                                    @improvement.Improvement.Name
+                                    @improvement.Improvement!.Name
                                 </li>
                             }
                         </ul>
