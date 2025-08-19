@@ -93,25 +93,26 @@
                     <input asp-for="Bathrooms" class="form-control" type="number" min="0" />
                     <span asp-validation-for="Bathrooms" class="text-danger"></span>
                 </div>
-
-                <!-- Mejoras -->
                 <div class="mb-3">
-                    <label asp-for="ImprovementId" class="form-label">Mejoras</label>
-                    <select asp-for="ImprovementId" class="form-select">
-                        @if (Model.Improvements == null || !Model.Improvements.Any())
+                    <label class="form-label">Mejoras</label>
+                    <div>
+                        @foreach (var improvement in Model.Improvements!)
                         {
-                            <option value="">No hay mejoras disponibles</option>
+                            <div class="form-check form-check-inline">
+                                <input type="checkbox"
+                                       name="ImprovementIds"
+                                       value="@improvement.Id"
+                                       class="form-check-input"
+                                @(Model.ImprovementIds.Contains(improvement.Id) ? "checked" : "") />
+                                <label class="form-check-label">@improvement.Name</label>
+                            </div>
                         }
-                        else
-                        {
-                            @foreach (var improvement in Model.Improvements!)
-                            {
-                                <option value="@improvement.Id">@improvement.Name</option>
-                            }
-                        }
-                    </select>
-                    <span asp-validation-for="ImprovementId" class="text-danger"></span>
+                    </div>
+                    <span asp-validation-for="ImprovementIds" class="text-danger"></span>
                 </div>
+
+
+
                 @if (EditMode)
                 {
                     <div id="propertyCarousel" class="carousel slide mb-3" data-bs-ride="carousel" style="height: 400px; max-width: 700px;">

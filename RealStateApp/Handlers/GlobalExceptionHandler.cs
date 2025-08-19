@@ -3,7 +3,7 @@ using RealStateApp.Core.Application.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 
-namespace RealStateApp.Presentation.WebApp.Handlers
+namespace RealStateApp.Presentation.API.Handlers
 {
     public class GlobalExceptionHandler : IExceptionHandler
     {

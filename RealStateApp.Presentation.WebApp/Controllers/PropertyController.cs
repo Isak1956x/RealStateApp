@@ -86,11 +86,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers
                     Id = pt.Id,
                     Name = pt.Name
                 }).ToList(),
-                Improvements = improvements.Select(i => new ImprovementViewModel
-                {
-                    Id = i.Id,
-                    Name = i.Name
-                }).ToList(),
+                Improvements = _mapper.Map<List<ImprovementViewModel>>(improvements),
                 SaleTypes = saleTypes.Select(st => new SaleTypeViewModel
                 {
                     Id = st.Id,
@@ -98,8 +94,9 @@ namespace RealStateApp.Presentation.WebApp.Controllers
                 }).ToList(),
                 SaleTypeId = 0,
                 AgentId = userSession!.Id,
-                Description = ""
-            };
+                Description = "",
+                ImprovementIds = new List<int>()
+                };
             return View(propertyViewModel);
         }
         [Authorize(Roles = "Agent")]
@@ -129,6 +126,17 @@ namespace RealStateApp.Presentation.WebApp.Controllers
                 vm.SaleTypes = _mapper.Map<List<SaleTypeViewModel>>(saleTypes);
                 return View(vm);
             }
+            if(!vm.ImprovementIds.Any())
+            {
+                ModelState.AddModelError("ImprovementIds", "Improvement is alo");
+                var saleTypes = await _saleTypeService.GetAll();
+                var improvements = await _improvementService.GetAll();
+                var propertTypes = await _propertyTypeService.GetAll();
+                vm.PropertyTypes = _mapper.Map<List<PropertyTypeViewModel>>(propertTypes);
+                vm.Improvements = _mapper.Map<List<ImprovementViewModel>>(improvements);
+                vm.SaleTypes = _mapper.Map<List<SaleTypeViewModel>>(saleTypes);
+                return View(vm);
+            }
 
             var propertyDto = new PropertyDto
             {
@@ -146,13 +154,16 @@ namespace RealStateApp.Presentation.WebApp.Controllers
             };
             var result = await _propertyService.AddAsync(propertyDto);
             if (result != null)
-            {
-                var propertyImprovementDto = new PropertyImprovementDto
+
+                foreach (var improvement in vm.ImprovementIds)
                 {
-                    PropertyId = result.Id,
-                    ImprovementId = vm.ImprovementId
-                };
-                await _propertyImprovementService.AddAsync(propertyImprovementDto);
+                    var propertyImprovementDto = new PropertyImprovementDto
+                    {
+                        PropertyId = result.Id,
+                        ImprovementId = improvement
+                    };
+                    await _propertyImprovementService.AddAsync(propertyImprovementDto);
+                }
                 if (vm.Images.Any())
                 {
                     foreach (var image in vm.Images)
@@ -165,7 +176,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers
                         await _propertyImageService.AddAsync(imageDto);
                     }
                 }
-            }
+            
                 return RedirectToAction("PropertiesMaintenance");
         }
         [Authorize(Roles = "Agent")]

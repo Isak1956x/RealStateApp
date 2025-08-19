@@ -1,4 +1,6 @@
 
+using RealStateApp.Presentation.API.Handlers;
+
 namespace RealStateApp
 {
     public class Program
@@ -24,7 +26,8 @@ namespace RealStateApp
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddProblemDetails();
 
             app.MapControllers();
 

@@ -28,7 +28,7 @@ namespace RealState.Infraestructure.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                return Result<TEntity>.Fail(ex.Message);
+               throw new ArgumentNullException();
             }
         }
 
