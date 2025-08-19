@@ -20,5 +20,7 @@ namespace RealStateApp.Core.Application.Services
             _propertyImprovementRepository = repository;
             _mapper = mapper;
         }
+
+
     }
 }

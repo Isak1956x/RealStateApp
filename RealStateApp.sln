@@ -28,6 +28,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealStateApp.Integration.Tests", "RealStateApp.Integration.Tests\RealStateApp.Integration.Tests.csproj", "{8B759D78-65F5-4593-97A2-0B82127ED3D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealStateApp.Unit.Tests", "RealStateApp.Unit.Tests\RealStateApp.Unit.Tests.csproj", "{BFDAAF5C-7B28-4AB0-BDCE-D435F96AC3EF}"
+
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RealState.Testing", "RealState.Testing", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealState.Testing.CQRSTesting", "RealState.Testing.CQRSTesting\RealState.Testing.CQRSTesting.csproj", "{F6F2CB57-C9E8-4FC3-B4C8-2BEA7F33C373}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +75,10 @@ Global
 		{BFDAAF5C-7B28-4AB0-BDCE-D435F96AC3EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFDAAF5C-7B28-4AB0-BDCE-D435F96AC3EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFDAAF5C-7B28-4AB0-BDCE-D435F96AC3EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6F2CB57-C9E8-4FC3-B4C8-2BEA7F33C373}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6F2CB57-C9E8-4FC3-B4C8-2BEA7F33C373}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6F2CB57-C9E8-4FC3-B4C8-2BEA7F33C373}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6F2CB57-C9E8-4FC3-B4C8-2BEA7F33C373}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +93,8 @@ Global
 		{DD61C62B-7E28-44D0-AC81-D215C9DCA8BE} = {55860D8F-405D-44E5-80FC-D9D47A28295D}
 		{8B759D78-65F5-4593-97A2-0B82127ED3D3} = {1E2959D3-375D-4F03-ADF0-4E1A7312725C}
 		{BFDAAF5C-7B28-4AB0-BDCE-D435F96AC3EF} = {1E2959D3-375D-4F03-ADF0-4E1A7312725C}
+
+		{F6F2CB57-C9E8-4FC3-B4C8-2BEA7F33C373} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B9595E80-2528-474C-ADAC-01601D5063CB}

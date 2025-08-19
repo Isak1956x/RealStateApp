@@ -20,6 +20,13 @@ namespace RealStateApp.Core.Application.Interfaces
         Task<IEnumerable<UserDto>> GetByRole(UserRoles role);
         Task<IEnumerable<UserDto>> GetAdmins();
         Task<Result<UserDto>> GetUserByIdAsync(string id);
+        Task<Result<Unit>> ChangueUserActive(string id, bool isActive);
         Task<IEnumerable<UserDto>> GetDevs();
+        Task<Result<UserDto>> RegisterByAdmin(RegisterRequestDTO registerRequest);
+        Task<IEnumerable<UserDto>> GetAgents();
+        Task<Result<Unit>> DeleteAgentAsyn(string id);
+        Task<AdminDashboardDto> GetDashboardResume();
+        Task<UserDto> GetAgentById(string id);
+        Task<bool> ChangueStatusAgentById(string id, bool isActive);
     }
 }

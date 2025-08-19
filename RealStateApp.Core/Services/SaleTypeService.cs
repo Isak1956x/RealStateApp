@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using RealStateApp.Core.Application.DTOs;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Domain.Entities;
@@ -20,5 +21,15 @@ namespace RealStateApp.Core.Application.Services
             _saleTypeRepository = repository;
             _mapper = mapper;
         }
+
+        public async Task<IEnumerable<SaleTypeDto>> GetAllSalesTypesAsync()
+            => await _saleTypeRepository.AsQuery()
+                      .Select(st => new SaleTypeDto
+                      {
+                          Id = st.Id,
+                          Name = st.Name,
+                          Description = st.Description,
+                          PropertyCount = st.Properties.Count
+                      }).ToListAsync(); 
     }
 }

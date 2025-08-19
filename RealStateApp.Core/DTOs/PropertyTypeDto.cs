@@ -12,6 +12,7 @@ namespace RealStateApp.Core.Application.DTOs
         public required string Name { get; set; }
         public string? Description { get; set; }
 
+        public int? PropertyCount { get; set; }
         public ICollection<PropertyDto>? Properties { get; set; }
     }
 }

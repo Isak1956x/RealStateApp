@@ -15,16 +15,20 @@ namespace RealStateApp.Core.Application.ViewModels.Login
         [Required(ErrorMessage = "Last name is required.")]
         public string LastName { get; set; }
         [Required(ErrorMessage = "IdCardNumber is required.")]
-        [RegularExpression(@"^\d{8,10}$", ErrorMessage = "IdCardNumber must be between 8 and 10 digits.")]
+        [RegularExpression(@"^\d{11}$", ErrorMessage = "Id Number must be 11 digits.")]
         public string IdCardNumber { get; set; }
+
         [Required(ErrorMessage = "Password is required.")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
         [Required(ErrorMessage = "Confirm Password is required.")]
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
-        public required int Role { get; set; } 
+        public  int Role { get; set; } 
+
+        public string Controller { get; set; } = "Login";
     }
 }

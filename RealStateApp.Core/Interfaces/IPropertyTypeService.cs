@@ -10,5 +10,6 @@ namespace RealStateApp.Core.Application.Services
 {
     public interface IPropertyTypeService : IGenericService<PropertyTypeDto>
     {
+        Task<IEnumerable<PropertyTypeDto>> GetAllPropertyTypesAsync();
     }
 }

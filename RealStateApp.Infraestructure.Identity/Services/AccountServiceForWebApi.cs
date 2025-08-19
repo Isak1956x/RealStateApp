@@ -4,7 +4,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RealStateApp.Core.Application.DTOs.Users;
 using RealStateApp.Core.Application.Interfaces.Infraestructure.Shared;
+using RealStateApp.Core.Application.Services;
 using RealStateApp.Core.Domain.Base;
+using RealStateApp.Core.Domain.Enums;
 using RealStateApp.Core.Domain.Settings;
 using RealStateApp.Infraestructure.Identity.Entities;
 using RealStateApp.Infraestructure.Identity.Service;
@@ -19,7 +21,8 @@ namespace RealStateApp.Infraestructure.Identity.Services
         private readonly JwtSettings _jwtSettings;
 
         public AccountServiceForWebApi(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            IEmailService emailService, IOptions<JwtSettings> jwtSetting, IMapper mapper) : base(userManager, signInManager, emailService, mapper)
+            IEmailService emailService, IOptions<JwtSettings> jwtSetting, IMapper mapper, IPropertyService propertyService) 
+            : base(userManager, signInManager, emailService, mapper, propertyService)
         {
             _jwtSettings = jwtSetting.Value;
         }
@@ -36,8 +39,19 @@ namespace RealStateApp.Infraestructure.Identity.Services
             {
                 throw new UnauthorizedAccessException("Email not confirmed. Please check your inbox.");
             }
-            var result = await _signInManager.PasswordSignInAsync(user, loginRequestDTO.Password, false, false);
-            if (!result.Succeeded)
+            var roles = await _userManager.GetRolesAsync(user);
+            if (!user.IsActive)
+            {
+                throw new UnauthorizedAccessException("Your user is inactive, please contact with an admin");
+            }
+
+            if (!(roles.Contains(UserRoles.Developer.ToString()) || roles.Contains(UserRoles.Admin.ToString())))
+            {
+                throw new UnauthorizedAccessException("You are not authorized to use the WebApi.");
+            }
+
+            var result =  await _userManager.CheckPasswordAsync(user, loginRequestDTO.Password);
+            if (!result) 
             {
                 throw new UnauthorizedAccessException("Invalid email or password.");
             }

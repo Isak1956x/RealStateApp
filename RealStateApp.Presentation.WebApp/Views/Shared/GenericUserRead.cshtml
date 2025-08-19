@@ -1,0 +1,107 @@
+﻿@using RealStateApp.Core.Application.ViewModels.Login
+@model UserGenericList;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = Model.Controller;
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <div class="card mb-4 shadow">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">@ViewData["Title"]</h5>
+                @if (Model.UserType != "Agent")
+                {
+                    <a asp-controller="@Model.Controller" asp-action="New" class="btn btn-sm btn-light">
+                        <i class="fas fa-plus"></i> New
+                    </a>
+                }
+               
+            </div>
+        </div>
+        <div class="card-body">
+            @if (!Model.List.Any())
+            {
+                <div class="alert alert-info text-center mb-0">There's no @ViewData["Title"] registered'</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>FirstName</th>
+                                <th>LastName</th>
+                                <th>User nam</th>
+                                <th>Email</th>
+                                <th>Id Card Number</th>
+                                @if (Model.UserType == "Agent")
+                                {
+                                    <th>Property count</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var pt in Model.List)
+                            {
+                                <tr>
+
+                                    <td>@pt.FirstName</td>
+                                    <td>@pt.LastName</td>
+                                    <td>@pt.UserName</td>
+                                    <td>@pt.Email</td>
+                                    <td>@pt.IdCardNumber</td>
+                                    @if(Model.UserType == "Agent")
+                                    {
+                                        <td>@pt.LinkedProperties</td>
+                                    }
+
+                                    <td>
+
+                                        @if(Model.UserType != "Agent")
+                                        {
+                                            <a asp-controller="@Model.Controller" asp-action="Update" asp-route-Id="@pt.Id"
+                                               class="btn btn-sm btn-outline-warning">
+                                                <i class="fas fa-trash-alt"></i> Edit
+                                            </a>
+										}
+		)
+                                        
+                                        @if(pt.IsActive)
+                                        {
+                                            <a asp-controller="@Model.Controller" asp-action="Deactive" asp-route-Id="@pt.Id"
+                                               class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-edit"></i> Deactive
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="@Model.Controller" asp-action="Active" asp-route-Id="@pt.Id"
+                                               class="btn btn-sm btn-outline-success">
+                                                <i class="fas fa-edit"></i> Active
+                                            </a>
+									    }
+
+                                        @if (Model.UserType == "Agent")
+                                        {
+                                            <a asp-controller="@Model.Controller" asp-action="Delete" asp-route-Id="@pt.Id"
+                                               class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-trash-alt"></i> Delete
+                                            </a>
+                                        }
+                                        
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
