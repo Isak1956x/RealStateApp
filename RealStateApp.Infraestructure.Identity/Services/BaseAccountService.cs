@@ -327,6 +327,49 @@ namespace RealStateApp.Infraestructure.Identity.Services
             return Unit.Value;
         }
 
+        public async Task<UserDto> GetAgentById(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return null;
+            }
+            var roles = await _userManager.GetRolesAsync(user);
+            if (!roles.Contains(UserRoles.Agent.ToString()))
+            {
+                return null; // Not an agent
+            }
+            return new UserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                IdCardNumber = user.IdNumber,
+                IsActive = user.IsActive,
+                Role = roles.FirstOrDefault()
+            };
+        }
+
+        public async Task<bool> ChangueStatusAgentById(string id, bool isActive)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if( user == null)
+            {
+                return false;
+            }
+            var roles = await _userManager.GetRolesAsync(user);
+            if (!roles.Contains(UserRoles.Agent.ToString()))
+            {
+                return false; // Not an agent
+            }
+            user.IsActive = isActive;
+            var result = await _userManager.UpdateAsync(user);
+            
+            return true;
+        }
+
 
         public async Task<IEnumerable<UserDto>> GetByRole(UserRoles role)
         {

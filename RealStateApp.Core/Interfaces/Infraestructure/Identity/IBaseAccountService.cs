@@ -25,5 +25,7 @@ namespace RealStateApp.Core.Application.Interfaces
         Task<IEnumerable<UserDto>> GetAgents();
         Task<Result<Unit>> DeleteAgentAsyn(string id);
         Task<AdminDashboardDto> GetDashboardResume();
+        Task<UserDto> GetAgentById(string id);
+        Task<bool> ChangueStatusAgentById(string id, bool isActive);
     }
 }
