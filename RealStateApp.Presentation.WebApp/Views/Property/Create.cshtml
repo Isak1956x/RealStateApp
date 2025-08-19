@@ -15,7 +15,7 @@
         <div class="card-body">
             <form asp-action="@(EditMode  ? "Edit" : "Create")" method="post" enctype="multipart/form-data" class="mt-3">
 
-                <!-- Tipo de propiedad -->
+                
                 <div class="mb-3">
                     <label asp-for="PropertyTypeId" class="form-label">Tipo de Propiedad</label>
                     <select asp-for="PropertyTypeId" class="form-select">
@@ -34,7 +34,6 @@
                     <span asp-validation-for="PropertyTypeId" class="text-danger"></span>
                 </div>
 
-                <!-- Tipo de venta -->
                 <div class="mb-3">
                     <label asp-for="SaleTypeId" class="form-label">Tipo de Venta</label>
                     <select asp-for="SaleTypeId" class="form-select">
@@ -53,7 +52,7 @@
                     <span asp-validation-for="SaleTypeId" class="text-danger"></span>
                 </div>
 
-                <!-- Precio -->
+            
                 <div class="mb-3">
                     <label asp-for="Price" class="form-label">Precio</label>
                     <div class="input-group">
@@ -63,14 +62,14 @@
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
 
-                <!-- Descripción -->
+            
                 <div class="mb-3">
                     <label asp-for="Description" class="form-label">Descripción</label>
                     <textarea asp-for="Description" class="form-control" rows="3"></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
 
-                <!-- Tamaño -->
+           
                 <div class="mb-3">
                     <label asp-for="SizeInMeters" class="form-label">Tamaño</label>
                     <div class="input-group">
@@ -80,38 +79,39 @@
                     <span asp-validation-for="SizeInMeters" class="text-danger"></span>
                 </div>
 
-                <!-- Habitaciones -->
+   
                 <div class="mb-3">
                     <label asp-for="Bedrooms" class="form-label">Habitaciones</label>
                     <input asp-for="Bedrooms" class="form-control" type="number" min="0" />
                     <span asp-validation-for="Bedrooms" class="text-danger"></span>
                 </div>
 
-                <!-- Baños -->
+                
                 <div class="mb-3">
                     <label asp-for="Bathrooms" class="form-label">Baños</label>
                     <input asp-for="Bathrooms" class="form-control" type="number" min="0" />
                     <span asp-validation-for="Bathrooms" class="text-danger"></span>
                 </div>
-
-                <!-- Mejoras -->
                 <div class="mb-3">
-                    <label asp-for="ImprovementId" class="form-label">Mejoras</label>
-                    <select asp-for="ImprovementId" class="form-select">
-                        @if (Model.Improvements == null || !Model.Improvements.Any())
+                    <label class="form-label">Mejoras</label>
+                    <div>
+                        @foreach (var improvement in Model.Improvements!)
                         {
-                            <option value="">No hay mejoras disponibles</option>
+                            <div class="form-check form-check-inline">
+                                <input type="checkbox"
+                                       name="ImprovementIds"
+                                       value="@improvement.Id"
+                                       class="form-check-input"
+                                @(Model.ImprovementIds.Contains(improvement.Id) ? "checked" : "") />
+                                <label class="form-check-label">@improvement.Name</label>
+                            </div>
                         }
-                        else
-                        {
-                            @foreach (var improvement in Model.Improvements!)
-                            {
-                                <option value="@improvement.Id">@improvement.Name</option>
-                            }
-                        }
-                    </select>
-                    <span asp-validation-for="ImprovementId" class="text-danger"></span>
+                    </div>
+                    <span asp-validation-for="ImprovementIds" class="text-danger"></span>
                 </div>
+
+
+
                 @if (EditMode)
                 {
                     <div id="propertyCarousel" class="carousel slide mb-3" data-bs-ride="carousel" style="height: 400px; max-width: 700px;">
@@ -144,7 +144,7 @@
                         </button>
                     </div>
                 }
-                <!-- Imágenes -->
+        
                 <div class="mb-3">
                     <label asp-for="Images" class="form-label">Seleccione de 1 a 4 imágenes</label>
                     <input asp-for="Images" type="file" class="form-control" accept="image/*" multiple>
@@ -157,7 +157,7 @@
                 <input asp-for="PropertyTypes" hidden>
                 <input asp-for="Improvements" hidden>
                 <input asp-for="SaleTypes" hidden>
-                <!-- Botón -->
+          
                 <div class="d-grid">
                     <button type="submit" class="btn btn-success">@(EditMode ? "Editar Propiedad" : "Guardar Propiedaf")</button>
                 </div>

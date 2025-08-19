@@ -2,18 +2,14 @@
 @model List<PropertyViewModel>
 @{
     ViewData["Title"] = "Home Page";
-    Layout = "_AgentLayout";
+    Layout = ViewBag.isClient ? "_ClientLayout" : "_GeneralLayout";
 }
-
 <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Mantenimiento de Propiedades</h2>
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-lg"></i>
-        </a>
-    </div>
+
+    <h2 class="mb-4">Propiedades de @ViewBag.agentName</h2>
 
     <div class="row g-4">
+       <div class="row g-4">
         @if (Model != null && Model.Any())
         {
             foreach (var propiedad in Model)
@@ -50,25 +46,18 @@
                                     <i class="bi bi-bucket me-2"></i> @propiedad.Bathrooms Baños
                                 </p>
 
-                                <!-- Botones alineados abajo a la derecha -->
-                                <div class="mt-auto d-flex justify-content-end gap-2">
-                                    <a asp-action="Edit" asp-route-id="@propiedad.Id" class="btn btn-warning btn-sm" title="Editar">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@propiedad.Id" class="btn btn-danger btn-sm" title="Eliminar">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
+                            
                             </div>
                         </a>
                     </div>
                 </div>
             }
-        }
+         }
         else
         {
-            <div class="col-12">
-                <div class="alert alert-info">No hay propiedades disponibles.</div>
+            <div class="col-12 d-flex flex-column justify-content-center align-items-center py-5">
+                <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="No hay propiedades" style="width:100px; margin-bottom:20px;" />
+                <h4 class="text-muted text-center">Este agente no tiene ninguna propiedad registrada.</h4>
             </div>
         }
     </div>

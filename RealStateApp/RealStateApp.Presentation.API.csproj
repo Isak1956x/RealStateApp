@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -24,6 +24,10 @@
 
   <ItemGroup>
     <Folder Include="Controllers\V2\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RealStateApp.Core\RealStateApp.Core.Application.csproj" />
   </ItemGroup>
 
 </Project>

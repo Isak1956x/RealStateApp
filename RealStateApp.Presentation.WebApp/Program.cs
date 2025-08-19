@@ -15,6 +15,13 @@ namespace RealStateApp.Presentation.WebApp
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddSession(opt =>
+            {
+                opt.IdleTimeout = TimeSpan.FromMinutes(60);
+                opt.Cookie.HttpOnly = true;
+            });
+
             builder.Services.AddPersistenceLayerIoc(builder.Configuration);
             builder.Services.AddIdentityServiceForWebApp(builder.Configuration);
             builder.Services.AddApplicationLayerIoc();
@@ -22,7 +29,7 @@ namespace RealStateApp.Presentation.WebApp
             builder.Services.AddSharedLayerService(builder.Configuration);
 
             var app = builder.Build();
-             app.Services.RunIdentitySeedAsyn();
+            await app.Services.RunIdentitySeedAsyn();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -34,7 +41,7 @@ namespace RealStateApp.Presentation.WebApp
 
             app.UseHttpsRedirection();
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();

@@ -58,6 +58,7 @@ namespace RealStateApp.Infraestructure.Identity
             {
                 opt.ExpireTimeSpan = TimeSpan.FromHours(4);
                 opt.SlidingExpiration = true;
+
                 opt.LoginPath = "/Login";
                 opt.AccessDeniedPath = "/Login";
             });
@@ -173,7 +174,8 @@ namespace RealStateApp.Infraestructure.Identity
                 await DefaultIdentUser.SeedAsync(userManager);
                 //await DefaultIdentUser.SeedAsync(userManager);
                 await DefaultAdminUser.SeedAsync(userManager);
-                await DefaultAdminUser.SeedAsync(userManager);
+                await DefaultAgentUser.SeedAsync(userManager);
+                await DefaultClientUser.SeedAsync(userManager);
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using RealStateApp.Core.Application.DTOs.Users;
+using RealStateApp.Core.Application.ViewModels;
 using RealStateApp.Core.Domain.Base;
 using RealStateApp.Core.Domain.Enums;
 

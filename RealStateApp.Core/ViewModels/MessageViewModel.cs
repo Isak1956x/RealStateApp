@@ -12,8 +12,10 @@ namespace RealStateApp.Core.Application.ViewModels
         public int ChatID { get; set; }
         public ChatViewModel? Chat { get; set; }
         public required string Content { get; set; }
-        public int SenderID { get; set; }
+        public required string SenderID { get; set; }
         public DateTime Date { get; set; }
+        public bool isFromClient { get; set; }
+        public string? SenderName { get; set; }
 
     }
 }

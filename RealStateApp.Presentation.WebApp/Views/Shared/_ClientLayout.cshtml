@@ -28,10 +28,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="ClientHome" asp-action="MyProperties">Mis Propiedades</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Agentes</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Agents" asp-action="Index" asp-route-isClient="@true">Agentes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Cerrar Sesion</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Logout">Cerrar Sesion</a>
                         </li>
                     </ul>
                 </div>
@@ -60,7 +60,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - RealStateApp.Presentation.WebApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - RealStateApp
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

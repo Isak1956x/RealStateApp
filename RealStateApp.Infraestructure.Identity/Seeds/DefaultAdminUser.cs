@@ -17,7 +17,9 @@ namespace RealStateApp.Infraestructure.Identity.Seeds
                 Email = "addmin@email.com",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
-                UserName = "admin"
+                UserName = "admin",
+                IdNumber = "1233",
+                PhotoPath = "dada",
             };
 
             if (await userManager.Users.AllAsync(u => u.Id != user.Id))

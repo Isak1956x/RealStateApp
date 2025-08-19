@@ -17,7 +17,8 @@ namespace RealStateApp.Core.Application.ViewModels
         public int SaleTypeId { get; set; }
         public List<SaleTypeViewModel>? SaleTypes { get; set; }
         [Required(ErrorMessage = "Improvement is required.")]
-        public int ImprovementId { get; set; }
+      
+        public List<int> ImprovementIds { get; set; } = new();
         public List<ImprovementViewModel>? Improvements { get; set; }
         [Required(ErrorMessage = "A image  is required")]
         public List<IFormFile> Images { get; set; } = new();

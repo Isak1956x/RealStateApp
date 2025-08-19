@@ -1,12 +1,16 @@
 using System.Diagnostics;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RealStateApp.Core.Application.Services;
 using RealStateApp.Core.Application.ViewModels;
+using RealStateApp.Infraestructure.Identity.Entities;
 using RealStateApp.Presentation.WebApp.Models;
 
 namespace RealStateApp.Presentation.WebApp.Controllers
 {
+    [Authorize(Roles = "Client")]
     public class ClientHomeController : Controller
     {
 
@@ -14,21 +18,24 @@ namespace RealStateApp.Presentation.WebApp.Controllers
  private readonly IFavoritePropertyService _favoritePropertyService;
         private readonly IPropertyService _propertyService;
         private readonly IPropertyTypeService _propertyTypeServices;
+        private readonly UserManager<AppUser> _userManager;
 
-        public ClientHomeController(IMapper mapper, IFavoritePropertyService favoritePropertyService, IPropertyService propertyService, IPropertyTypeService propertyTypeService)
+        public ClientHomeController(IMapper mapper, IFavoritePropertyService favoritePropertyService, IPropertyService propertyService, IPropertyTypeService propertyTypeServices, UserManager<AppUser> userManager)
         {
             _mapper = mapper;
             _favoritePropertyService = favoritePropertyService;
             _propertyService = propertyService;
-            _propertyTypeServices = propertyTypeService;
+            _propertyTypeServices = propertyTypeServices;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index(HomeViewModel? filters)
         {
+            AppUser? userSession = await _userManager.GetUserAsync(User);
             var properties = await _propertyService.GetAllListWithInclude(["PropertyType", "SaleType", "PropertyImprovements", "Images"]);
             var propertyTypes = await _propertyTypeServices.GetAll();
 
-            var favPropertiesIds = (await _favoritePropertyService.GetAll()).Where(f => f.UserId == "g").Select(f => f.PropertyId).ToList();
+            var favPropertiesIds = (await _favoritePropertyService.GetAll()).Where(f => f.UserId == userSession!.Id).Select(f => f.PropertyId).ToList();
             var propertiesVm = _mapper.Map<List<PropertyViewModel>>(properties)
                 .Where(p => p.IsAvailable)
                 .OrderByDescending(p => p.CreateAt).ToList();
@@ -76,15 +83,20 @@ namespace RealStateApp.Presentation.WebApp.Controllers
                 PropertyTypes = propertyTypesVm,
                 FavPropertiesIds = favPropertiesIds
             };
-            
+            if(userSession != null)
+            {
+            ViewBag.ClientName = $"{userSession.FirstName} {userSession.LastName}";
+
+            }
             return View(homeVm);
         }
 
         public async Task<IActionResult> MyProperties()
         {
+            AppUser? userSession = await _userManager.GetUserAsync(User);
             var propertyTypes = await _propertyTypeServices.GetAll();
-            var favProperties = (await _favoritePropertyService.GetAllListWithInclude(["Property"])).Where(f => f.UserId == "g").Select(p => p.PropertyId);
-            var properties = (await _propertyService.GetAllListWithInclude(["PropertyType", "SaleType", "PropertyImprovements", "Images"])).Where(p => favProperties.Contains(p.Id));
+            var favProperties = (await _favoritePropertyService.GetAllListWithInclude(["Property"])).Where(f => f.UserId == userSession!.Id).Select(p => p.PropertyId);
+            var properties = (await _propertyService.GetAllListWithInclude(["PropertyType", "SaleType", "PropertyImprovements", "Images"])).Where(p => favProperties.Contains(p.Id) && p.IsAvailable);
             var favPropertiesVm = _mapper.Map<List<PropertyViewModel>>(properties);
             var myPropertiesVm = new MyPropertiesViewModel
             {

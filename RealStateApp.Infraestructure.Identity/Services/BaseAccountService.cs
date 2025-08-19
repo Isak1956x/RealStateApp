@@ -7,11 +7,13 @@ using RealStateApp.Core.Application.DTOs.Users;
 using RealStateApp.Core.Application.Helpers.Enums;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Application.Interfaces.Infraestructure.Shared;
+using RealStateApp.Core.Application.ViewModels;
 using RealStateApp.Core.Application.Services;
 using RealStateApp.Core.Domain.Base;
 using RealStateApp.Core.Domain.Enums;
 using RealStateApp.Core.Domain.Interfaces;
 using RealStateApp.Infraestructure.Identity.Entities;
+using System.Data;
 using System.Text;
 
 namespace RealStateApp.Infraestructure.Identity.Services
@@ -51,9 +53,12 @@ namespace RealStateApp.Infraestructure.Identity.Services
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 IdCardNumber = user.IdNumber,
-                IsActive = user.IsActive
+                IsActive = user.IsActive,
+                PhotoPath = user.PhotoPath,
+                PhoneNumber = user.PhoneNumber
             };
-            userDto.Role = roles.FirstOrDefault();
+             userDto.Role = roles.FirstOrDefault();
+
             return userDto;
         }
 
@@ -82,6 +87,7 @@ namespace RealStateApp.Infraestructure.Identity.Services
                 FirstName = registerRequest.FirstName,
                 LastName = registerRequest.LastName,
                 PhotoPath = registerRequest.PhotoPath,
+
                 IdNumber = registerRequest.IdCardNumber,
                 PhoneNumberConfirmed = true,
                 EmailConfirmed = false
@@ -205,6 +211,9 @@ namespace RealStateApp.Infraestructure.Identity.Services
             }
             user.FirstName = dto.FirstName;
             user.LastName = dto.LastName;
+            user.PhotoPath = dto.PhotoPath ?? user.PhotoPath;
+            user.PhoneNumber = dto.PhoneNumber;
+
             //user.PhotoPath = dto.PhotoPath;
             user.IdNumber = dto.IdCardNumber;
             user.UserName = dto.UserName;
@@ -383,7 +392,9 @@ namespace RealStateApp.Infraestructure.Identity.Services
                 LastName = user.LastName,
                 IdCardNumber = user.IdNumber,
                 IsActive = user.IsActive,
-                Role = role.ToString()
+                Role = role.ToString(),
+                PhotoPath = user.PhotoPath
+
             });
 
         }

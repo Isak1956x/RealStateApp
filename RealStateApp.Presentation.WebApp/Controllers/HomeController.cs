@@ -1,8 +1,12 @@
 using System.Diagnostics;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Application.Services;
 using RealStateApp.Core.Application.ViewModels;
+using RealStateApp.Core.Domain.Enums;
+using RealStateApp.Infraestructure.Identity.Entities;
 using RealStateApp.Presentation.WebApp.Models;
 
 namespace RealStateApp.Presentation.WebApp.Controllers
@@ -13,16 +17,30 @@ namespace RealStateApp.Presentation.WebApp.Controllers
  private readonly IPropertyService _propertyService;
  private readonly IPropertyTypeService _propertyTypeServices;
  private readonly IMapper _mapper;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly IAccountServiceForWebApp _accountService;
 
-        public HomeController(IPropertyService propertyService, IPropertyTypeService propertyTypeServices, IMapper mapper)
+        public HomeController(IPropertyService propertyService, IPropertyTypeService propertyTypeServices, IMapper mapper, UserManager<AppUser> userManager, IAccountServiceForWebApp accountService)
         {
             _propertyService = propertyService;
             _propertyTypeServices = propertyTypeServices;
             _mapper = mapper;
+            _userManager = userManager;
+            _accountService = accountService;
         }
 
         public async Task<IActionResult> Index(HomeViewModel? filters)
         {
+            AppUser? userSession = await _userManager.GetUserAsync(User);
+            if(userSession != null)
+            {
+                var user = await _accountService.GetUserByIdAsync(userSession.Id);
+                if (user.Value.Role == UserRoles.Client.ToString())
+                    return RedirectToAction("Index", "ClientHome");
+                if (user.Value.Role == UserRoles.Agent.ToString())
+                    return RedirectToAction("Index", "AgentHome");
+                return RedirectToAction("Index", "Admin");
+            }
             var properties = await _propertyService.GetAllListWithInclude(["PropertyType", "SaleType", "PropertyImprovements", "Images"]);
             var propertyTypes = await _propertyTypeServices.GetAll();
 
@@ -76,11 +94,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers
             
             return View(homeVm);
         }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+ 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

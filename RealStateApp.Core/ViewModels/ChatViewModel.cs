@@ -2,7 +2,7 @@
 
 namespace RealStateApp.Core.Application.ViewModels
 {
-    public class ChatViewModel : BaseEntity
+    public class ChatViewModel 
     {
         public int ChatId { get; set; }
         public int PropertyId { get; set; }
@@ -10,5 +10,7 @@ namespace RealStateApp.Core.Application.ViewModels
         public required string CustomerId { get; set; }
         public required string AgentId { get; set; }
         public ICollection<MessageViewModel>? Messages { get; set; }
+        public string? LastMessage { get; set; }
+        public string? SenderName { get; set; }
     }
 }

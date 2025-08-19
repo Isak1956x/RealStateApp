@@ -6,6 +6,8 @@ using RealStateApp.Infraestructure.Shared;
 using RealStateApp.Presentation.API.Extensions;
 using System.Threading.Tasks;
 
+using RealStateApp.Presentation.API.Handlers;
+
 namespace RealStateApp
 {
     public class Program
@@ -54,7 +56,12 @@ namespace RealStateApp
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddProblemDetails();
+
             app.UseHealthChecks("/health");
+
 
 
             app.MapControllers();

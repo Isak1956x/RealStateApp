@@ -12,7 +12,7 @@ namespace RealStateApp.Core.Application.DTOs
 
         public int Id { get; set; }
 
-        public int ClientId { get; set; }
+        public required string ClientId { get; set; }
 
         public int PropertyId { get; set; }
         public PropertyDto? Property { get; set; }

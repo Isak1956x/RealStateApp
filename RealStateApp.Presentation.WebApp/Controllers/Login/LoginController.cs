@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RealStateApp.Core.Application.DTOs.Users;
 using RealStateApp.Core.Application.Helpers.Enums;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Application.ViewModels.Login;
 using RealStateApp.Core.Domain.Enums;
+using RealStateApp.Infraestructure.Identity.Entities;
 using RealStateApp.Presentation.WebApp.Handlers;
 
 namespace RealStateApp.Presentation.WebApp.Controllers.Login
@@ -13,17 +15,20 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
     {
         private readonly IAccountServiceForWebApp _accountService;
         private readonly IMapper _mapper;
+        private readonly UserManager<AppUser> _userManager;
 
-        public LoginController(IAccountServiceForWebApp accountService, IMapper mapper)
+        public LoginController(IAccountServiceForWebApp accountService, IMapper mapper, UserManager<AppUser> userManager)
         {
             _accountService = accountService;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         public IActionResult Index(string Error = null, string Message = null)
         {
             if (!string.IsNullOrEmpty(Error))
             {
+
                ViewBag.Error = Error;
             }
             if (!string.IsNullOrEmpty(Message))
@@ -40,31 +45,45 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
             {
                 return View(loginVM);
             }
+
             var dto = new LoginRequestDTO
             {
                 Email = loginVM.Email,
                 Password = loginVM.Password
             };
+
             var result = await _accountService.Login(dto);
             if (result.IsSuccess)
             {
+                var user = _accountService.GetUserByIdAsync(result.Value.Id).Result;
                 // Handle successful login, e.g., redirect to a dashboard
-                return RedirectToAction("Index", "Home");
+                if (user.Value.Role == UserRoles.Client.ToString())
+                     return RedirectToAction("Index", "ClientHome");
+                if (user.Value.Role == UserRoles.Agent.ToString())
+                     return RedirectToAction("Index", "AgentHome");
+                return RedirectToAction("Index", "Admin");
             }
-            ViewBag.Error = result.Error;   
+            ViewBag.Error = result.Error;
+            ModelState.AddModelError("Password", result.Error);
+
             return View(loginVM);
         }
 
         public IActionResult Register()
         {
+
             return View(new RegisterVM() { Roles = EnumHelper.GetEnumsAsIdent<UserRoles>().Where(i => i.Id != 1 && i.Id != 4)}); 
         }
 
         [HttpPost]
         public async Task<IActionResult> Register(RegisterVM registerVM)
         {
-            if (!ModelState.IsValid)
+            registerVM.Roles = EnumHelper
+                    .GetEnumsAsIdent<UserRoles>()
+                    .Where(i => i.Id != 1 && i.Id != 4);
+             if (!ModelState.IsValid)
             {
+
                 registerVM.Roles = EnumHelper.GetEnumsAsIdent<UserRoles>().Where(i => i.Id != 1 && i.Id != 4);
                 return View(registerVM);
             }
@@ -85,6 +104,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
             if (result.IsSuccess)
             {
                 var path = FileHandler.Upload(registerVM.PhotoPath, result.Value, "Users");
+
                 await _accountService.UpdateProfilePhoto(result.Value,path);
                 return RedirectToAction("Index", "Login", new { Message = "Please confirm your email."});
             }
@@ -156,7 +176,19 @@ namespace RealStateApp.Presentation.WebApp.Controllers.Login
 
             return RedirectToAction("Index", new { Message = "Se el ha reiniciado la contraseña" });
         }
+        public async Task<IActionResult> AccessDenied()
+        {
+            AppUser? userSession = await _userManager.GetUserAsync(User);
 
+            if (userSession != null)
+            {
+                var user = await _accountService.GetUserByIdAsync(userSession.Id);
+                ViewBag.CurrentRol = user?.Value.Role.ToString() ?? "";
+                return View();
+            }
+
+            return RedirectToRoute(new { controller = "Login", action = "Index" });
+        }
         public async Task<IActionResult> Logout()
         {
             await _accountService.SignOut();

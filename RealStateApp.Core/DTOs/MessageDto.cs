@@ -12,7 +12,7 @@ namespace RealStateApp.Core.Application.DTOs
         public int ChatID { get; set; }
         public ChatDto? Chat { get; set; }
         public required string Content { get; set; }
-        public int SenderID { get; set; }
+        public required string SenderID { get; set; }
         public DateTime Date { get; set; }
 
     }
