@@ -6,7 +6,7 @@
     Layout = ViewBag.isClient ? "_ClientLayout" : "_GeneralLayout";
 }
 
-<!-- Banner con overlay y título -->
+
 <div class="position-relative mb-4">
     <img src="https://t4.ftcdn.net/jpg/00/97/87/09/360_F_97870953_V0Aq7dhJp2reT1GsGXy0vI2fdazTC9IX.jpg" class="img-fluid w-100" style="max-height:250px; object-fit:cover;" alt="Banner" />
     <div class="position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(0,0,0,0.4);"></div>
@@ -22,7 +22,7 @@
                 <input type="text" name="agentName" value="@Context.Request.Query["search"]"
                        class="form-control form-control-sm me-2" placeholder="Buscar agente..." />
                 <button type="submit" class="btn btn-primary btn-sm">
-                    <i class="bi bi-search"></i> <!-- Bootstrap Icons lupa -->
+                    <i class="bi bi-search"></i> 
                 </button>
             </form>
         </div>
@@ -37,7 +37,7 @@
             <div class="col-6 col-md-3 mb-4">
                 <a asp-controller="Property" asp-action="agentProperties" asp-route-agentId="@agent.Id"asp-route-isClient="@ViewBag.IsClient" class="text-decoration-none">
                     <div class="card border rounded shadow-sm h-100 hover-shadow" style="transition: transform 0.2s;">
-                        <!-- Foto circular y ajustada -->
+                       
                         <div class="d-flex justify-content-center mt-3">
                             <img src="@agent.PhotoPath"
                                  class="rounded-circle border border-light"

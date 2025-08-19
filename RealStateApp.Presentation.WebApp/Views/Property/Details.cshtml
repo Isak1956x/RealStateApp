@@ -25,7 +25,7 @@
 
 <div class="container my-4">
     <div class="row g-4">
-        <!-- Columna izquierda -->
+  
         <div class="col-lg-8">
             <div class="card shadow-sm">
                 <!-- Carrusel -->
@@ -92,7 +92,7 @@
             </div>
         </div>
 
-        <!-- Columna derecha -->
+        
         <div class="col-lg-4">
             <!-- Agente -->
             <div class="card p-3 shadow-sm mb-4">
@@ -109,7 +109,7 @@
                     </div>
                 </div>
                 <a class="btn btn-success w-100"
-                   href="https://wa.me/@Model.Agent.PhoneNumber?text=Hola, estoy interesado en una propiedad que vi en la página."
+                   href="https://wa.me/+1@(Model.Agent.PhoneNumber)?text=Hola, estoy interesado en una propiedad que vi en la página."
                    target="_blank">
                     <i class="bi bi-whatsapp"></i> Solicitar Asesoría
                 </a>
@@ -161,7 +161,7 @@
                         </div>
                     }
 
-                    <!-- Footer del chat -->
+                    
                     <div class="card-footer">
                         @if (TempData["ErrorMessage"] != null)
                         {
@@ -248,7 +248,7 @@
                                 </div>
 
                                 <div class="modal-body">
-                                    <!-- Campo oculto con el ID de la propiedad -->
+                                    
                                     <input type="hidden" name="PropertyId" value="@Model.Property.Id" />
 
                                     <div class="mb-3">
@@ -289,7 +289,7 @@
                                         <span class="badge bg-info">@chat.LastMessage</span>
                                     </button>
 
-                                    <!-- Modal para este chat -->
+                                    
                                     <div class="modal fade" id="chatModal-@chat.ChatId" tabindex="-1">
                                         <div class="modal-dialog modal-lg">
                                             <div class="modal-content">

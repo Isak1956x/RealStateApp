@@ -5,10 +5,9 @@
     Layout = ViewBag.isClient ? "_ClientLayout" : "_GeneralLayout";
 }
 <div class="container py-4">
-    <!-- Título del agente -->
+
     <h2 class="mb-4">Propiedades de @ViewBag.agentName</h2>
 
-    <!-- Grilla de propiedades -->
     <div class="row g-4">
        <div class="row g-4">
         @if (Model != null && Model.Any())

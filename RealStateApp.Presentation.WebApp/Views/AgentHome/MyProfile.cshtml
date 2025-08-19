@@ -3,7 +3,7 @@
 
 @{
     ViewData["Title"] = "Editar Perfil";
-    Layout = "_AgentLayout"; // Ajusta el layout según el tuyo
+    Layout = "_AgentLayout"; 
 }
 
 <div class="container mt-5">
@@ -19,28 +19,27 @@
                     <form asp-action="UpdateAgent" asp-controller="Agents" method="post" enctype="multipart/form-data">
                         <input asp-for="PhotoPath" type="hidden" />
 
-                        <!-- Nombre -->
+                      
                         <div class="mb-3">
                             <label asp-for="FirstName" class="form-label fw-bold">Nombre</label>
                             <input asp-for="FirstName" class="form-control" placeholder="Escriba su nombre" />
                             <span asp-validation-for="FirstName" class="text-danger small"></span>
                         </div>
 
-                        <!-- Apellido -->
+                      
                         <div class="mb-3">
                             <label asp-for="LastName" class="form-label fw-bold">Apellido</label>
                             <input asp-for="LastName" class="form-control" placeholder="Escriba su apellido" />
                             <span asp-validation-for="LastName" class="text-danger small"></span>
                         </div>
 
-                        <!-- Teléfono -->
+                      
                         <div class="mb-3">
                             <label asp-for="PhoneNumber" class="form-label fw-bold">Teléfono</label>
                             <input asp-for="PhoneNumber" class="form-control" placeholder="Ej: +1 809 555 1234" />
                             <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
                         </div>
 
-                        <!-- Foto -->
                         <div class="mb-3">
                             <label asp-for="Photo" class="form-label fw-bold">Foto de usuario</label>
                             @if (!string.IsNullOrEmpty(Model.PhotoPath))
@@ -55,7 +54,7 @@
                             <small class="text-muted">Este campo es opcional</small>
                         </div>
 
-                        <!-- Botones -->
+                    
                         <div class="d-flex justify-content-between mt-4">
                             <a asp-controller="AgentHome" asp-action="Index" class="btn btn-outline-secondary px-4">
                                 ← Volver al Home

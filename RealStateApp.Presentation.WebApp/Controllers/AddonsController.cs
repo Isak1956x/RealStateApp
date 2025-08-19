@@ -39,7 +39,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers
                 {
                     ChatID = chatId,
                     Content = message,
-                    SenderID = userSession!.Id, // Replace with actual sender ID
+                    SenderID = userSession!.Id, 
                     Date = DateTime.Now
                 };
                 await _messageService.AddAsync(messageDto);

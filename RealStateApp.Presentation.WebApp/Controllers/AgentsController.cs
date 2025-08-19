@@ -33,8 +33,14 @@ namespace RealStateApp.Presentation.WebApp.Controllers
 
         public async Task<IActionResult> Index(string? agentName)
         {
-            AppUser? userSession = await _userManager.GetUserAsync(User);
-            var user = await _accountService.GetUserByIdAsync(userSession!.Id);
+            ViewBag.IsClient = false;
+         AppUser? userSession = await _userManager.GetUserAsync(User);
+            if(userSession != null)
+            {
+
+               var user = await _accountService.GetUserByIdAsync(userSession!.Id);
+            ViewBag.IsClient = user.Value.Role == "Client";
+            }
             var agents = await _accountService.GetByRole(UserRoles.Agent);
             var agentsVm = _mapper.Map<List<UserViewModel>>(agents).OrderBy(a => a.FirstName).ThenBy(a => a.LastName).Where(a => a.IsActive).ToList();
             if (agentName != null)
@@ -44,7 +50,6 @@ namespace RealStateApp.Presentation.WebApp.Controllers
                     .Where(a => a.FirstName.ToUpper().Contains(agentNameUpper) || a.LastName.ToUpper().Contains(agentNameUpper))
                     .ToList();
             }
-            ViewBag.IsClient = user.Value.Role == "Client";
 
             return View(agentsVm);
         }
