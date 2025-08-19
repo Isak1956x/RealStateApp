@@ -23,33 +23,37 @@
 <form method="get" asp-action="Index" class="row g-3 mb-4">
     <div class="col-md-3">
         <label class="form-label">Tipo de propiedad</label>
+
         <select asp-for="PropertyTypeId" class="form-select">
             <option value="">Todas</option>
-            @foreach (var propertyType in Model.PropertyTypes!)
+            @if (Model.PropertyTypes != null && Model.PropertyTypes.Any())
             {
-                <option value="@propertyType.Id">@propertyType.Name</option>
+                foreach (var propertyType in Model.PropertyTypes)
+                {
+                    <option value="@propertyType.Id">@propertyType.Name</option>
+                }
             }
         </select>
     </div>
 
     <div class="col-md-2">
         <label class="form-label">Precio mínimo</label>
-        <input type="number" asp-for="MinPrice" class="form-control" placeholder="RD$">
+        <input type="number" asp-for="MinPrice" class="form-control" placeholder="RD$" min="1">
     </div>
 
     <div class="col-md-2">
         <label class="form-label">Precio máximo</label>
-        <input type="number" asp-for="MaxPrice" class="form-control" placeholder="RD$">
+        <input type="number" asp-for="MaxPrice" class="form-control" placeholder="RD$" min="1">
     </div>
 
     <div class="col-md-2">
         <label class="form-label">Habitaciones</label>
-        <input type="number" asp-for="Bedrooms" class="form-control" min="0">
+        <input type="number" asp-for="Bedrooms" class="form-control" min="1">
     </div>
 
     <div class="col-md-2">
         <label class="form-label">Baños</label>
-        <input type="number" asp-for="Bathrooms" class="form-control" min="0">
+        <input type="number" asp-for="Bathrooms" class="form-control" min="1">
     </div>
 
     <div class="col-md-1 d-flex align-items-end">

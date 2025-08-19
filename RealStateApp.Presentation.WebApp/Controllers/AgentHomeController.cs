@@ -31,7 +31,7 @@ namespace RealStateApp.Presentation.WebApp.Controllers
             _accountService = accountService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(HomeViewModel? filters)
         {
             AppUser? userSession = await _userManager.GetUserAsync(User);
             ViewBag.AgentName = $"{userSession!.FirstName} {userSession.LastName}";
@@ -39,7 +39,43 @@ namespace RealStateApp.Presentation.WebApp.Controllers
             var propertyTypes = await _propertyTypeService.GetAll();
             var propertiesVm = _mapper.Map<List<PropertyViewModel>>(properties)
                 .Where(p => p.AgentId == userSession!.Id).OrderByDescending(p => p.IsAvailable).ToList();
+            if (filters != null && propertiesVm != null)
+            {
+                if (filters.Code != null)
+                {
+                    var codeUpper = filters.Code.ToUpper();
+                    propertiesVm = propertiesVm
+                        .Where(p => p.Code.Contains(codeUpper))
+                        .ToList();
+                }
+                else
+                {
+                    if (filters.PropertyTypeId.HasValue)
+                        propertiesVm = propertiesVm
+                            .Where(p => p.PropertyTypeId == filters.PropertyTypeId)
+                            .ToList();
 
+                    if (filters.MinPrice.HasValue)
+                        propertiesVm = propertiesVm
+                            .Where(p => p.Price >= filters.MinPrice)
+                            .ToList();
+
+                    if (filters.MaxPrice.HasValue)
+                        propertiesVm = propertiesVm
+                            .Where(p => p.Price <= filters.MaxPrice)
+                            .ToList();
+
+                    if (filters.Bedrooms.HasValue)
+                        propertiesVm = propertiesVm
+                            .Where(p => p.Bedrooms == filters.Bedrooms)
+                            .ToList();
+
+                    if (filters.Bathrooms.HasValue)
+                        propertiesVm = propertiesVm
+                            .Where(p => p.Bathrooms == filters.Bathrooms)
+                            .ToList();
+                }
+            }
             var AgentHomeVm = new HomeViewModel
             {
                 Properties = propertiesVm,

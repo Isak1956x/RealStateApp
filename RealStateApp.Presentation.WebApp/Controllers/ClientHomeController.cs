@@ -91,13 +91,50 @@ namespace RealStateApp.Presentation.WebApp.Controllers
             return View(homeVm);
         }
 
-        public async Task<IActionResult> MyProperties()
+        public async Task<IActionResult> MyProperties(HomeViewModel? filters)
         {
             AppUser? userSession = await _userManager.GetUserAsync(User);
             var propertyTypes = await _propertyTypeServices.GetAll();
             var favProperties = (await _favoritePropertyService.GetAllListWithInclude(["Property"])).Where(f => f.UserId == userSession!.Id).Select(p => p.PropertyId);
             var properties = (await _propertyService.GetAllListWithInclude(["PropertyType", "SaleType", "PropertyImprovements", "Images"])).Where(p => favProperties.Contains(p.Id) && p.IsAvailable);
             var favPropertiesVm = _mapper.Map<List<PropertyViewModel>>(properties);
+            if (filters != null && favPropertiesVm != null)
+            {
+                if (filters.Code != null)
+                {
+                    var codeUpper = filters.Code.ToUpper();
+                    favPropertiesVm = favPropertiesVm
+                        .Where(p => p.Code.Contains(codeUpper))
+                        .ToList();
+                }
+                else
+                {
+                    if (filters.PropertyTypeId.HasValue)
+                        favPropertiesVm = favPropertiesVm
+                            .Where(p => p.PropertyTypeId == filters.PropertyTypeId)
+                            .ToList();
+
+                    if (filters.MinPrice.HasValue)
+                        favPropertiesVm = favPropertiesVm
+                            .Where(p => p.Price >= filters.MinPrice)
+                            .ToList();
+
+                    if (filters.MaxPrice.HasValue)
+                        favPropertiesVm = favPropertiesVm
+                            .Where(p => p.Price <= filters.MaxPrice)
+                            .ToList();
+
+                    if (filters.Bedrooms.HasValue)
+                        favPropertiesVm = favPropertiesVm
+                            .Where(p => p.Bedrooms == filters.Bedrooms)
+                            .ToList();
+
+                    if (filters.Bathrooms.HasValue)
+                        favPropertiesVm = favPropertiesVm
+                            .Where(p => p.Bathrooms == filters.Bathrooms)
+                            .ToList();
+                }
+            }
             var myPropertiesVm = new MyPropertiesViewModel
             {
                 Properties = favPropertiesVm,
