@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore.Metadata;
 using RealStateApp.Core.Application.DTOs.Email;
 using RealStateApp.Core.Application.DTOs.Users;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Application.Interfaces.Infraestructure.Shared;
-using RealStateApp.Core.Application.Wrappers;
+using RealStateApp.Core.Application.Services;
 using RealStateApp.Core.Domain.Base;
 using RealStateApp.Core.Domain.Enums;
 using RealStateApp.Infraestructure.Identity.Entities;
@@ -15,8 +16,8 @@ namespace RealStateApp.Infraestructure.Identity.Services
 {
     public class AccountServiceForWebApp : BaseAccountService, IAccountServiceForWebApp
     {
-        public AccountServiceForWebApp(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService, IMapper mapper) 
-            : base(userManager, signInManager, emailService, mapper)
+        public AccountServiceForWebApp(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService, IMapper mapper, IPropertyService propertyService) 
+            : base(userManager, signInManager, emailService,mapper, propertyService)
         {
         }
 
@@ -32,6 +33,16 @@ namespace RealStateApp.Infraestructure.Identity.Services
             {
                 return Result<LoginResponseDTO>.Fail("Email not confirmed. Please check your inbox.");
             }
+            var roles = await _userManager.GetRolesAsync(user);
+            if(!(roles.Contains(UserRoles.Client.ToString()) || roles.Contains(UserRoles.Agent.ToString()) || roles.Contains(UserRoles.Admin.ToString())))
+            {
+                return Result<LoginResponseDTO>.Fail("You are not authorized to use the WebApp.");
+            }
+            if(!user.IsActive)
+            {
+                return Result<LoginResponseDTO>.Fail("Your user is inactive, please contact with an admin");
+            }
+
             var result = await _signInManager.PasswordSignInAsync(user, loginRequest.Password, false, false);
             if (!result.Succeeded)
             {
@@ -43,7 +54,8 @@ namespace RealStateApp.Infraestructure.Identity.Services
                 UserName = user.UserName,
                 Email = user.Email,
                 FirstName = user.FirstName,
-                LastName = user.LastName
+                LastName = user.LastName,
+                IsVerified = user.EmailConfirmed,
             };
         }
 
@@ -93,7 +105,7 @@ namespace RealStateApp.Infraestructure.Identity.Services
         {
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-            var route = "User/ConfirmEmail";
+            var route = "Login/ConfirmEmail";
             var completeUrl = new Uri($"{origin}/{route}");
             var verificationUrl = QueryHelpers.AddQueryString(completeUrl.ToString(), "userId", user.Id.ToString());
             verificationUrl = QueryHelpers.AddQueryString(verificationUrl, "token", token);

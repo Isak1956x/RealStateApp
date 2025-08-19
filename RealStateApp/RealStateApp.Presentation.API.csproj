@@ -7,7 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="9.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RealState.Infraestructure.Persistence\RealState.Infraestructure.Persistence.csproj" />
+    <ProjectReference Include="..\RealStateApp.Core\RealStateApp.Core.Application.csproj" />
+    <ProjectReference Include="..\RealStateApp.Infraestructure.Identity\RealStateApp.Infraestructure.Identity.csproj" />
+    <ProjectReference Include="..\RealStateApp.Infraestructure.Shared\RealStateApp.Infraestructure.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\V2\" />
   </ItemGroup>
 
   <ItemGroup>

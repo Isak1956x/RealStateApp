@@ -9,7 +9,7 @@ namespace RealStateApp.Infraestructure.Shared
 {
     public static class ServiceExtensionIOC
     {
-        public static IServiceCollection AddSharedLayerService(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddSharedLayerService(this IServiceCollection services,IConfiguration configuration)
         {
             services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
             services.AddScoped<IEmailService, EmailService>();

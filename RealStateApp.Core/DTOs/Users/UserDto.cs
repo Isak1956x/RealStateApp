@@ -9,8 +9,11 @@
         public string LastName { get; set; }
         public string IdCardNumber { get; set; }
         public bool IsActive { get; set; }
-        public string Role { get; set; } // Assuming Role is a string, adjust as necessary,
+// Assuming Role is a string, adjust as necessary,
         public string PhotoPath { get; set; }
         public string PhoneNumber { get; set; }
+        public string Role { get; set; } 
+        public int RoleId { get; set; }
+        public int LinkedProperties { get; set; }
     }
 }
