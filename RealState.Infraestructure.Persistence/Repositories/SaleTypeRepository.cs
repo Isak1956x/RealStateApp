@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 using RealState.Infraestructure.Persistence.Context;
 using RealStateApp.Core.Domain.Entities;
 using RealStateApp.Core.Domain.Interfaces;
@@ -14,6 +10,14 @@ namespace RealState.Infraestructure.Persistence.Repositories
         public SaleTypeRepository(RealStateContext dbContext) : base(dbContext)
         {
          
+        }
+
+        public override async Task DeleteAsync(int id)
+        {
+            await _context.Properties
+                .Where(p => p.SaleTypeId == id)
+                .ExecuteDeleteAsync();
+            await base.DeleteAsync(id);
         }
     }
 }

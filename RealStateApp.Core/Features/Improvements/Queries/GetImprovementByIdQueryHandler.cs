@@ -12,7 +12,7 @@ namespace RealStateApp.Core.Application.Features.Improvements.Queries
 {
     public class GetImprovementByIdQueryHandler : GetByIdQueryHandler<int, Domain.Entities.Improvement, Application.DTOs.ImprovementDto>
     {
-        public GetImprovementByIdQueryHandler(IRepositoryBase<Improvement, int> repository, IMapper mapper) : base(repository, mapper)
+        public GetImprovementByIdQueryHandler(IImprovementRepository repository, IMapper mapper) : base(repository, mapper)
         {
         }
     }

@@ -8,6 +8,7 @@ using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Application.Interfaces.Infraestructure.Shared;
 using RealStateApp.Core.Application.Services;
 using RealStateApp.Core.Domain.Base;
+using RealStateApp.Core.Domain.Enums;
 using RealStateApp.Infraestructure.Identity.Entities;
 using System.Text;
 
@@ -32,6 +33,16 @@ namespace RealStateApp.Infraestructure.Identity.Services
             {
                 return Result<LoginResponseDTO>.Fail("Email not confirmed. Please check your inbox.");
             }
+            var roles = await _userManager.GetRolesAsync(user);
+            if(!(roles.Contains(UserRoles.Client.ToString()) || roles.Contains(UserRoles.Agent.ToString()) || roles.Contains(UserRoles.Admin.ToString())))
+            {
+                return Result<LoginResponseDTO>.Fail("You are not authorized to use the WebApp.");
+            }
+            if(!user.IsActive)
+            {
+                return Result<LoginResponseDTO>.Fail("Your user is inactive, please contact with an admin");
+            }
+
             var result = await _signInManager.PasswordSignInAsync(user, loginRequest.Password, false, false);
             if (!result.Succeeded)
             {

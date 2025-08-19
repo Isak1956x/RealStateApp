@@ -8,7 +8,7 @@ namespace RealStateApp.Core.Application.Features.Properties.Queries
 {
     public class GetAllProperties : GetAllListQueryHandler<int, Property, PropertyDto>
     {
-        public GetAllProperties(IRepositoryBase<Property, int> repository, IMapper mapper) 
+        public GetAllProperties(IPropertyRepository repository, IMapper mapper) 
             : base(repository, mapper)
         {
         }

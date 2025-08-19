@@ -7,7 +7,7 @@ namespace RealStateApp.Core.Application.Features.Properties.Queries
 {
     public class GetByIdProperty : GetByIdQueryHandler<int, Domain.Entities.Property, Application.DTOs.PropertyDto>
     {
-        public GetByIdProperty(IRepositoryBase<Property, int> repository, IMapper mapper) : base(repository, mapper)
+        public GetByIdProperty(IPropertyRepository repository, IMapper mapper) : base(repository, mapper)
         {
         }
     }

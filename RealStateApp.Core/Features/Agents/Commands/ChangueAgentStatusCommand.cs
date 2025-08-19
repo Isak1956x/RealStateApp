@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Domain.Base;
+using RealStateApp.Infraestructure.Identity.Service;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,9 @@ namespace RealStateApp.Core.Application.Features.Agents.Commands
 {
     public class ChangueAgentStatusCommand : IRequest<Result<Domain.Base.Unit>>
     {
+        [SwaggerParameter("Unique identifier of agent")]
         public string AgentId { get; set; }
+        [SwaggerParameter("Indicates whether the agent is active or not")]
         public bool IsActive { get; set; }
         
     }
@@ -19,7 +23,7 @@ namespace RealStateApp.Core.Application.Features.Agents.Commands
     public class ChangeAgentStatusCommandHandler : IRequestHandler<ChangueAgentStatusCommand, Result<Domain.Base.Unit>>
     {
         private readonly IBaseAccountService _accountService;
-        public ChangeAgentStatusCommandHandler(IBaseAccountService accountService)
+        public ChangeAgentStatusCommandHandler(IAccountServiceForApi accountService)
         {
             _accountService = accountService;
         }

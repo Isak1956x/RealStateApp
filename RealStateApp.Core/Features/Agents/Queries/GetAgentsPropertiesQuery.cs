@@ -2,6 +2,7 @@
 using MediatR;
 using RealStateApp.Core.Application.DTOs;
 using RealStateApp.Core.Domain.Interfaces;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace RealStateApp.Core.Application.Features.Agents.Queries
 {
     public class GetAgentsPropertiesQuery : IRequest<IEnumerable<PropertyDto>>
     {
+        [SwaggerParameter("Unique identifier of agent")]
         public string AgentId { get; set; }
         
     }

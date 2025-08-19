@@ -8,7 +8,7 @@ namespace RealStateApp.Core.Application.Features.Improvements.Commands
 {
     public class CreateImprovementComandHandler : CreateResourceCommandHandler<Domain.Entities.Improvement, ImprovementDto>
     {
-        public CreateImprovementComandHandler(IRepositoryBase<Improvement, int> repository, IMapper mapper) : base(repository, mapper)
+        public CreateImprovementComandHandler(IImprovementRepository repository, IMapper mapper) : base(repository, mapper)
         {
         }
     }

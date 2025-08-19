@@ -8,7 +8,7 @@ namespace RealStateApp.Core.Application.Features.Common.GennericQueries
     {
     }
 
-    public class GetAllListQueryHandler<Tid, TEntity, Tdto> : IRequestHandler<GetAllListQuery<Tid, Tdto>, IEnumerable<Tdto>>
+    public abstract class GetAllListQueryHandler<Tid, TEntity, Tdto> : IRequestHandler<GetAllListQuery<Tid, Tdto>, IEnumerable<Tdto>>
         where TEntity : class
         where Tdto : class
     {

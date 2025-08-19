@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace RealStateApp.Core.Application.Features.PropertyTypes.Commands
 {
-    public class UpdatePropertyTypeCommand : UpdateResourceCommandHandler<PropertyType, PropertyTypeDto>
+    public class UpdatePropertyTypeCommandHandler : UpdateResourceCommandHandler<PropertyTypeDto, PropertyType>
     {
-        public UpdatePropertyTypeCommand(IPropertyTypeRepository repository, IMapper mapper) : base(repository, mapper)
+        public UpdatePropertyTypeCommandHandler(IPropertyTypeRepository repository, IMapper mapper) : base(repository, mapper)
         {
         }
     }

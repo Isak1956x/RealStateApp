@@ -8,7 +8,7 @@ namespace RealStateApp.Core.Application.Features.Common.GenericCommands
     {
     }
 
-    public class CreateResourceCommandHandler<TEntity, TDto> : IRequestHandler<CreateResourceCommand<TDto>, TDto>  where TEntity : class
+    public abstract class CreateResourceCommandHandler<TEntity, TDto> : IRequestHandler<CreateResourceCommand<TDto>, TDto>  where TEntity : class
     {
         private readonly IRepositoryBase<TEntity, int> _repository;
         private readonly IMapper _mapper;
@@ -22,6 +22,10 @@ namespace RealStateApp.Core.Application.Features.Common.GenericCommands
 
         public async Task<TDto> Handle(CreateResourceCommand<TDto> request, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrEmpty(request.Name))
+            {
+                throw new ArgumentException("Name cannot be null or empty");
+            }
             try
             {
                 TEntity entity = _mapper.Map<TEntity>(request as BaseResourceCommand);

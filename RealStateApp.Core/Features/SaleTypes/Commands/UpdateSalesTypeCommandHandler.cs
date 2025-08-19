@@ -13,7 +13,7 @@ namespace RealStateApp.Core.Application.Features.SaleTypes.Commands
 {
     public class UpdateSalesTypeCommandHandler : UpdateResourceCommandHandler<SaleTypeDto, SaleType>
     {
-        public UpdateSalesTypeCommandHandler(IRepositoryBase<SaleType, int> repository, IMapper mapper) : base(repository, mapper)
+        public UpdateSalesTypeCommandHandler(ISaleTypeRepository repository, IMapper mapper) : base(repository, mapper)
         {
         }
     }

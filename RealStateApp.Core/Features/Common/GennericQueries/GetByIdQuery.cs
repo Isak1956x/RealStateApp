@@ -14,7 +14,7 @@ namespace RealStateApp.Core.Application.Features.Common.GennericQueries
         public Tid Id { get; set; } 
     }
 
-    public class GetByIdQueryHandler<Tid,TEntity,TDto> : IRequestHandler<GetByIdQuery<Tid, TDto>, TDto>
+    public abstract class GetByIdQueryHandler<Tid,TEntity,TDto> : IRequestHandler<GetByIdQuery<Tid, TDto>, TDto>
         where TEntity : class
         where TDto : class
     {
@@ -28,7 +28,7 @@ namespace RealStateApp.Core.Application.Features.Common.GennericQueries
         public async Task<TDto> Handle(GetByIdQuery<Tid, TDto> request, CancellationToken cancellationToken)
         {
             var entity = await _repository.GetById(request.Id);
-            return _mapper.Map<TDto>(entity);
+            return _mapper.Map<TDto>(entity.Value);
         }
     }
 }

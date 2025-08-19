@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using RealStateApp.Core.Domain.Interfaces;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,11 @@ namespace RealStateApp.Core.Application.Features.Common.GenericCommands
 {
     public class DeleteResourceCommand<TDto> : IRequest<bool>
     {
+        [SwaggerParameter("The unique identifier of the resource to be deleted.")]
         public int Id { get; set; }
     }
 
-    public class DeleteResourceCommandHandler<TEntity, TDto> : IRequestHandler<DeleteResourceCommand<TDto>, bool> where TEntity : class
+    public abstract class DeleteResourceCommandHandler<TEntity, TDto> : IRequestHandler<DeleteResourceCommand<TDto>, bool> where TEntity : class
     {
         private readonly IRepositoryBase<TEntity, int> _repository;
 
@@ -35,7 +37,7 @@ namespace RealStateApp.Core.Application.Features.Common.GenericCommands
                 await _repository.DeleteAsync(entity);
                 return true;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
                 return false;
             }

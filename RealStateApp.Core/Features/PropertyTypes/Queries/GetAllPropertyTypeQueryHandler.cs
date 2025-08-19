@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace RealStateApp.Core.Application.Features.PropertyTypes.Queries
 {
-    internal class GetAllPropertyTypeQueryHandler : GetAllListQueryHandler<int, PropertyType, PropertyTypeDto>
+    public class GetAllPropertyTypeQueryHandler : GetAllListQueryHandler<int, PropertyType, PropertyTypeDto>
     {
         public GetAllPropertyTypeQueryHandler(IPropertyTypeRepository repository, IMapper mapper) : base(repository, mapper)
         {

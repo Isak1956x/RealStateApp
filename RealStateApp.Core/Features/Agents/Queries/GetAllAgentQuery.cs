@@ -3,6 +3,7 @@ using MediatR;
 using RealStateApp.Core.Application.DTOs.Users;
 using RealStateApp.Core.Application.Interfaces;
 using RealStateApp.Core.Domain.Enums;
+using RealStateApp.Infraestructure.Identity.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace RealStateApp.Core.Application.Features.Agents.Queries
     {
         private readonly IBaseAccountService _accountService;
         private readonly IMapper _mapper;
-        public GetAllAgentQueryHandler(IBaseAccountService agentRepository, IMapper mapper)
+        public GetAllAgentQueryHandler(IAccountServiceForApi agentRepository, IMapper mapper)
         {
             _accountService = agentRepository;
             _mapper = mapper;

@@ -12,7 +12,7 @@ namespace RealStateApp.Core.Application.Features.Improvements.Commands
 {
     public class DeleteImprovementComandHandler : DeleteResourceCommandHandler<Domain.Entities.Improvement, ImprovementDto>
     {
-        public DeleteImprovementComandHandler(IRepositoryBase<Improvement, int> repository) : base(repository)
+        public DeleteImprovementComandHandler(IImprovementRepository repository) : base(repository)
         {
         }
     }
